@@ -18,6 +18,7 @@ function App() {
   const [assetsLoaded, setAssetsLoaded] = useState({
     heroVideo: false,
     aboutImage: false,
+    featureVideo: false,
   });
 
   useEffect(() => {
@@ -35,21 +36,22 @@ function App() {
     img.onload = () => {
       setAssetsLoaded((prev) => ({ ...prev, aboutImage: true }));
     };
+
+    // Preload feature video
+    const featureVideo = document.createElement("video");
+    featureVideo.src = "videos/feature-2.mp4";
+    featureVideo.preload = "auto";
+    featureVideo.onloadeddata = () => {
+      setAssetsLoaded((prev) => ({ ...prev, featureVideo: true }));
+    };
   }, []);
 
-  useEffect(() => {
-    // Check if all assets are loaded
-    if (assetsLoaded.heroVideo && assetsLoaded.aboutImage) {
-      // Add a small delay to ensure smooth transition
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [assetsLoaded]);
+  const totalAssets = 3;
+  const loadedCount = Object.values(assetsLoaded).filter(Boolean).length;
+  const progress = Math.round((loadedCount / totalAssets) * 100);
 
   if (isLoading) {
-    return <Preloader onComplete={() => setIsLoading(false)} />;
+    return <Preloader progress={progress} onComplete={() => setIsLoading(false)} />;
   }
 
   return (

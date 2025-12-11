@@ -1,23 +1,17 @@
 import { useEffect, useState } from "react";
 import gsap from "gsap";
 
-const Preloader = ({ onComplete }) => {
+const Preloader = ({ progress: targetProgress = 0, onComplete }) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Animate progress
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 1;
-      });
-    }, 20);
-
-    return () => clearInterval(interval);
-  }, []);
+    if (progress < targetProgress) {
+      const timer = setTimeout(() => {
+        setProgress((prev) => prev + 1);
+      }, 20);
+      return () => clearTimeout(timer);
+    }
+  }, [progress, targetProgress]);
 
   useEffect(() => {
     if (progress === 100) {
