@@ -40,13 +40,8 @@ const Hero = () => {
   return (
     <div id="hero" className="relative h-dvh overflow-x-hidden bg-black">
       {loading && (
-        <div className="flex-center absolute z-[100] h-dvh w-screen overflow-hidden bg-violet-50">
-          {/* https://uiverse.io/G4b413l/tidy-walrus-92 */}
-          <div className="three-body">
-            <div className="three-body__dot"></div>
-            <div className="three-body__dot"></div>
-            <div className="three-body__dot"></div>
-          </div>
+        <div className="flex-center absolute z-[100] h-dvh w-screen overflow-hidden bg-black/0 pointer-events-none">
+          {/* Hidden loader - main preloader handles loading */}
         </div>
       )}
 
@@ -59,8 +54,7 @@ const Hero = () => {
         <video
           ref={videoRef}
           src="videos/trial.mp4"
-          preload="metadata"
-          poster="/img/logo.png"
+          preload="auto"
           autoPlay
           
           muted
