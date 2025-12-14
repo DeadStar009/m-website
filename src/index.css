@@ -569,6 +569,48 @@ img, video {
   }
 }
 
+/* Three-body loader animation */
+.three-body {
+  position: relative;
+  width: 80px;
+  height: 40px;
+}
+
+.three-body__dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #3b82f6, #06b6d4);
+  animation: three-body-bounce 1.4s infinite ease-in-out both;
+}
+
+.three-body__dot:nth-child(1) {
+  left: 8px;
+  animation-delay: -0.32s;
+}
+
+.three-body__dot:nth-child(2) {
+  left: 32px;
+  animation-delay: -0.16s;
+}
+
+.three-body__dot:nth-child(3) {
+  left: 56px;
+  animation-delay: 0s;
+}
+
+@keyframes three-body-bounce {
+  0%, 80%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    transform: scale(0);
+  }
+  40% {
+    box-shadow: 0 0 10px 0 rgba(59, 130, 246, 0.7);
+    transform: scale(1);
+  }
+}
+
 /* Improve scrollbar appearance */
 ::-webkit-scrollbar {
   width: 8px;
