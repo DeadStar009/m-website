@@ -48,15 +48,15 @@ const FloatingImage = () => {
   return (
     <div id="story" className="min-h-dvh w-screen bg-black text-blue-50 cyber-grid relative">
       <div className="section-divider absolute top-0" />
-      <div className="flex size-full flex-col items-center py-20 pb-32">
-        <p className="font-general text-sm uppercase md:text-[10px] text-glow animate-fade-in-up">
+      <div className="flex size-full flex-col items-center py-8 md:py-20 pb-16 md:pb-32 px-4">
+        <p className="font-general text-xs md:text-sm uppercase text-glow animate-fade-in-up">
           the multiversal ip world
         </p>
 
         <div className="relative size-full">
           <AnimatedTitle
             title="the st<b>o</b>ry of <br /> a <b>c</b>yber real<b>m</b>"
-            containerClass="mt-16 pointer-events-none mix-blend-difference relative z-10"
+            containerClass="mt-8 md:mt-16 pointer-events-none mix-blend-difference relative z-10"
           />
 
           <div className="story-img-container">

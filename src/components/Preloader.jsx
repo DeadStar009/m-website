@@ -1,29 +1,21 @@
 import { useEffect, useState } from "react";
 import gsap from "gsap";
 
-const Preloader = ({ progress: targetProgress = 0, onComplete }) => {
-  const [progress, setProgress] = useState(0);
-
+const Preloader = ({ progress = 0, onComplete }) => {
   useEffect(() => {
-    if (progress < targetProgress) {
-      const timer = setTimeout(() => {
-        setProgress((prev) => prev + 1);
-      }, 20);
-      return () => clearTimeout(timer);
-    }
-  }, [progress, targetProgress]);
-
-  useEffect(() => {
-    if (progress === 100) {
+    if (progress >= 100) {
       // Animate out the preloader
-      gsap.to(".preloader", {
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.inOut",
-        onComplete: () => {
-          onComplete();
-        },
-      });
+      const timer = setTimeout(() => {
+        gsap.to(".preloader", {
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.inOut",
+          onComplete: () => {
+            onComplete();
+          },
+        });
+      }, 300);
+      return () => clearTimeout(timer);
     }
   }, [progress, onComplete]);
 
@@ -73,7 +65,7 @@ const Preloader = ({ progress: targetProgress = 0, onComplete }) => {
               strokeLinecap="round"
               strokeDasharray={2 * Math.PI * 70}
               strokeDashoffset={2 * Math.PI * 70 * (1 - progress / 100)}
-              className="transition-all duration-300 ease-out"
+              className="transition-all duration-500 ease-in-out"
               style={{
                 filter: "drop-shadow(0 0 10px rgba(59, 130, 246, 0.8))",
               }}
@@ -99,7 +91,7 @@ const Preloader = ({ progress: targetProgress = 0, onComplete }) => {
         {/* Loading bar */}
         <div className="w-64 md:w-80 h-1 bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm border border-blue-900/30">
           <div
-            className="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 rounded-full transition-all duration-300 ease-out relative"
+            className="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 rounded-full transition-all duration-500 ease-in-out relative"
             style={{ width: `${progress}%` }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>

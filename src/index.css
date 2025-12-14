@@ -13,6 +13,17 @@ body {
   overflow-x: hidden;
   background-color: #000000;
   font-family: "General Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
 }
 
 @layer base {
@@ -48,7 +59,7 @@ body {
   }
 
   .nav-hover-btn {
-    @apply relative ms-10 font-general text-xs uppercase text-blue-50 cursor-pointer transition-all duration-300;
+    @apply relative ms-4 md:ms-10 font-general text-xs uppercase text-blue-50 cursor-pointer transition-all duration-300;
     text-shadow: 0 0 10px transparent;
   }
   
@@ -99,7 +110,8 @@ body {
   }
 
   .hero-heading {
-    @apply uppercase font-zentry font-black text-5xl sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem];
+    /* Tailwind default breakpoints start at sm; remove non-standard xs */
+    @apply uppercase font-zentry font-black text-4xl sm:text-7xl md:text-9xl lg:text-[12rem];
     text-shadow: 0 0 40px #000, 0 0 80px #000, 0 0 120px #000, 0 0 160px #000;
     filter: drop-shadow(0 0 40px rgba(0,0,0,1)) drop-shadow(0 0 80px rgba(0,0,0,1)) drop-shadow(0 0 120px rgba(0,0,0,1));
   }
@@ -110,15 +122,15 @@ body {
   }
 
   .about-subtext {
-    @apply absolute bottom-[-80dvh] left-1/2 w-full max-w-96 -translate-x-1/2 text-center font-circular-web text-lg md:max-w-[34rem];
+    @apply absolute bottom-[-80dvh] left-1/2 w-full max-w-96 -translate-x-1/2 text-center font-circular-web text-sm md:text-lg md:max-w-[34rem];
   }
 
   .about-image {
-    @apply absolute left-1/2 top-0 z-20 h-[60vh] w-96 origin-center -translate-x-1/2 overflow-hidden rounded-3xl md:w-[30vw];
+    @apply absolute left-1/2 top-0 z-20 h-[50vh] md:h-[60vh] w-72 md:w-96 origin-center -translate-x-1/2 overflow-hidden rounded-3xl md:w-[30vw];
   }
 
   .animated-title {
-    @apply flex flex-col gap-4 text-7xl uppercase leading-[.8] text-white sm:px-32 md:text-[6rem];
+    @apply flex flex-col gap-4 text-4xl md:text-7xl uppercase leading-[.8] text-white px-4 sm:px-32 md:text-[6rem];
   }
 
   .animated-word {
@@ -136,7 +148,7 @@ body {
   }
 
   .bento-tilt_1 {
-    @apply relative border-hsla col-span-2 overflow-hidden rounded-md transition-transform duration-300 ease-out;
+    @apply relative border-hsla col-span-1 md:col-span-2 overflow-hidden rounded-md transition-transform duration-300 ease-out;
   }
 
   .bento-tilt_2 {
@@ -144,7 +156,7 @@ body {
   }
 
   .bento-title {
-    @apply uppercase md:text-6xl text-4xl font-black font-zentry;
+    @apply uppercase text-base sm:text-xl md:text-4xl lg:text-6xl font-black font-zentry;
   }
 
   .story-img-container {
@@ -518,6 +530,61 @@ body {
     transform: translateY(66%) scale(0.65);
     opacity: 0.8;
   }
+}
+
+/* Mobile Responsive Utilities */
+@media (max-width: 768px) {
+  .cyber-grid {
+    background-size: 30px 30px;
+  }
+  
+  .floating-nav {
+    @apply mx-2;
+  }
+  
+  .section-divider {
+    @apply my-4;
+  }
+  
+  /* Improve touch targets on mobile */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent horizontal scroll on mobile */
+  html, body {
+    overflow-x: hidden;
+    position: relative;
+  }
+}
+
+@media (max-width: 640px) {
+  .bento-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .animated-word {
+    font-size: 0.85em;
+  }
+}
+
+/* Improve scrollbar appearance */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
 }
 
 

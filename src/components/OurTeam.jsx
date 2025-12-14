@@ -110,10 +110,10 @@ const OurTeam = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="bg-black min-h-screen text-blue-50 pt-32 px-6 md:px-20 overflow-x-hidden">
+    <div ref={containerRef} className="bg-black min-h-screen text-blue-50 pt-16 md:pt-32 px-3 md:px-6 lg:px-20 overflow-x-hidden">
       {/* Who We Are Section */}
-      <div className="flex flex-col md:flex-row gap-10 mb-20">
-        <div className="team-image-wrapper md:w-3/5 relative overflow-hidden rounded-lg h-[60vh]">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-10 mb-8 md:mb-20">
+        <div className="team-image-wrapper md:w-3/5 relative overflow-hidden rounded-lg h-[40vh] md:h-[60vh]">
            <img
             src="/img/team018.jpg" 
             alt="Team"
@@ -121,10 +121,10 @@ const OurTeam = () => {
           />
         </div>
         
-        <div className="title-wrapper flex flex-col justify-center overflow-hidden pl-10">
+        <div className="title-wrapper flex flex-col justify-center overflow-hidden pl-0 md:pl-10">
           {Array(4).fill("WHO ARE WE").map((item, i) => (
             <div key={i} className="who-we-are-container relative inline-block w-fit mb-1">
-              <h1 className="who-we-are-title font-zentry text-7xl md:text-9xl uppercase leading-[0.8] italic tracking-tight opacity-0 text-blue-100">
+              <h1 className="who-we-are-title font-zentry text-4xl md:text-7xl lg:text-9xl uppercase leading-[0.8] italic tracking-tight opacity-0 text-blue-100">
                 {item}
               </h1>
               <div className="block-revealer absolute inset-0 bg-[#38efe6] z-10 pointer-events-none"></div>
@@ -137,8 +137,8 @@ const OurTeam = () => {
       
 
       {/* Team Grid */}
-      <h2 className="font-zentry text-6xl mb-10 text-center uppercase">Our Team</h2>
-      <div className="team-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-20">
+      <h2 className="font-zentry text-3xl md:text-5xl lg:text-6xl mb-6 md:mb-10 text-center uppercase">Our Team</h2>
+      <div className="team-grid grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-8 pb-12 md:pb-20">
         {teamMembers.map((member, index) => (
           <div key={index} className="team-card group relative overflow-hidden rounded-xl bg-blue-900/20 border border-white/10">
             <div className="aspect-[3/4] overflow-hidden">

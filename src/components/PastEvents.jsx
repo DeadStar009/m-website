@@ -87,6 +87,7 @@ const EventCard = ({ name, date, description, image }) => {
   const [transformStyle, setTransformStyle] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const [showMatrix, setShowMatrix] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const cardRef = useRef(null);
   const { displayText, isTyping, startTyping } = useTypewriter(name, 150);
 
@@ -144,20 +145,33 @@ const EventCard = ({ name, date, description, image }) => {
       
       <div className="relative z-10">
         {/* Event Details */}
-        <div className="space-y-4 relative z-10">
-          <h3 className={`crypto-title text-xl font-black uppercase transition-colors duration-300 md:text-2xl ${
+        <div className="space-y-2 md:space-y-4 relative z-10">
+          <h3 className={`crypto-title text-base md:text-xl font-black uppercase transition-colors duration-300 lg:text-2xl ${
             isTyping ? 'typing' : ''
           } text-blue-100`}>
             {isHovered ? displayText : name}
           </h3>
           
-          <p className="font-general text-xs uppercase tracking-wider text-blue-300/70 transition-colors duration-300">
+          <p className="font-general text-[10px] md:text-xs uppercase tracking-wider text-blue-300/70 transition-colors duration-300">
             <span className="text-blue-400">&gt;</span> {date}
           </p>
           
-          <p className="font-circular-web text-sm leading-relaxed text-blue-50/70 transition-colors duration-300 group-hover:text-blue-50/90 border-l-2 border-blue-400/50 pl-3">
+          <p className="hidden md:block font-circular-web text-sm leading-relaxed text-blue-50/70 transition-colors duration-300 group-hover:text-blue-50/90 border-l-2 border-blue-400/50 pl-3">
             {description}
           </p>
+
+          {/* Mobile description toggle */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-xs uppercase tracking-wide text-blue-200 underline underline-offset-4"
+            >
+              {isExpanded ? 'Hide details' : 'Show details'}
+            </button>
+            <div className={`transition-all duration-300 text-blue-100/80 text-sm leading-relaxed border-l-2 border-blue-400/40 pl-3 ${isExpanded ? 'max-h-48 mt-2 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+              {description}
+            </div>
+          </div>
           
           {/* Subtle status indicator */}
           <div className="flex items-center space-x-2 font-general text-xs">
@@ -251,14 +265,14 @@ const PastEvents = () => {
     <section
       ref={sectionRef}
       id="past-events"
-      className="min-h-screen bg-black pb-32 pt-20 cyber-grid relative"
+      className="min-h-screen bg-black pb-12 md:pb-32 pt-8 md:pt-20 cyber-grid relative"
     >
       <div className="section-divider absolute top-0" />
-      <div className="container mx-auto px-5 md:px-10">
+      <div className="container mx-auto px-3 md:px-5 lg:px-10">
         
         {/* Section Header */}
-        <div className="mb-24 flex flex-col items-center gap-8 text-center">
-          <p className="font-general text-sm uppercase tracking-wider text-blue-300 md:text-base animate-fade-in-up">
+        <div className="mb-8 md:mb-24 flex flex-col items-center gap-3 md:gap-8 text-center">
+          <p className="font-general text-xs md:text-sm uppercase tracking-wider text-blue-300 animate-fade-in-up">
             Our Journey
           </p>
 
@@ -274,7 +288,7 @@ const PastEvents = () => {
         </div>
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
           {events.map((event, index) => (
             <EventCard
               key={index}

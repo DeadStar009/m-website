@@ -72,9 +72,9 @@ const Hero = () => {
           style={{ display: videoEnded ? 'none' : 'block' }}
         />
 
-        <div className="absolute left-0 top-0 z-40 flex size-full flex-col items-center justify-center">
+        <div className="absolute left-0 top-0 z-40 flex size-full flex-col items-center justify-center px-4">
           <div className="flex flex-col items-center justify-center text-center">
-            <h1 className="special-font hero-heading relative   text-blue-100">
+            <h1 className="special-font hero-heading relative text-blue-100">
               {/* <img
                 src="/img/logo.png"
                 alt="CYSCOM Logo"
@@ -86,7 +86,7 @@ const Hero = () => {
               <span className="relative z-10">CYS<b>C</b>OM</span>  
             </h1>
 
-            <p className="hero-text mb-5 max-w-64 font-robert-regular text-blue-100">
+            <p className="hero-text mb-5 max-w-64 md:max-w-md font-robert-regular text-blue-100 text-sm md:text-base px-4">
               Think Before You Click <br /> CyberSecurity Student Committee
             </p>
 

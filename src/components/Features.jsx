@@ -45,6 +45,7 @@ export const BentoCard = ({ src, title, description, isComingSoon }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [hoverOpacity, setHoverOpacity] = useState(0);
   const hoverButtonRef = useRef(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleMouseMove = (event) => {
     if (!hoverButtonRef.current) return;
@@ -104,19 +105,33 @@ export const BentoCard = ({ src, title, description, isComingSoon }) => {
           </div>
         )}
       </div>
+      {/* Mobile toggle for description */}
+      {description && (
+        <div className="mt-3 block md:hidden">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-xs uppercase tracking-wide text-blue-200 underline underline-offset-4"
+          >
+            {isExpanded ? 'Hide details' : 'Show details'}
+          </button>
+          <div className={`transition-all duration-300 text-blue-100/80 text-sm leading-relaxed ${isExpanded ? 'max-h-48 mt-2 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+            {description}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 const Features = () => (
-  <section className="bg-black pb-52 cyber-grid relative">
+  <section className="bg-black pb-20 md:pb-52 cyber-grid relative">
     <div className="section-divider absolute top-0" />
     <div className="container mx-auto px-3 md:px-10">
-      <div className="px-5 py-40">
-        <p className="font-circular-web text-xl text-blue-50 text-glow animate-fade-in-up">
+      <div className="px-3 md:px-5 py-12 md:py-40">
+        <p className="font-circular-web text-lg md:text-xl text-blue-50 text-glow animate-fade-in-up">
           Into the SECURITY Layer
         </p>
-        <p className="max-w-2xl font-circular-web text-lg text-blue-50/70 opacity-90 mt-6 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+        <p className="max-w-2xl font-circular-web text-sm md:text-lg text-blue-50/70 opacity-90 mt-6 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           Immerse yourself in a rich and ever-expanding universe where vulnerabilities await to be cracked, converging into an interconnected overlay experience on your world.
         </p>
       </div>
@@ -126,7 +141,7 @@ const Features = () => (
         rel="noopener noreferrer"
         className="block size-full"
       >
-      <BentoTilt className="border-hsla relative mb-7 h-96 w-full overflow-hidden rounded-md md:h-[65vh]">
+      <BentoTilt className="border-hsla relative mb-4 md:mb-7 h-64 md:h-96 lg:h-[65vh] w-full overflow-hidden rounded-md">
         <BentoCard
           src="img/newsletter.webp"
           title={
@@ -141,8 +156,8 @@ const Features = () => (
         
       </a>
    
-      <div className="grid h-[135vh] w-full grid-cols-2 grid-rows-3 gap-7">
-        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-2">
+      <div className="grid h-auto md:h-[135vh] w-full grid-cols-2 grid-rows-auto md:grid-rows-3 gap-3 md:gap-7">
+        <BentoTilt className="bento-tilt_1 row-span-1 col-span-2 md:col-span-1 md:row-span-2 h-48 md:h-auto">
           <a
             href="https://blog.cyscomvit.com/"
             target="_blank"
@@ -166,7 +181,7 @@ And the next one? Already on the way."
         </BentoTilt>
         
 
-        <BentoTilt className="bento-tilt_1 row-span-1 ms-32 md:col-span-1 md:ms-0">
+        <BentoTilt className="bento-tilt_1 row-span-1 col-span-1 md:col-span-1 h-48 md:h-auto">
           <a
             href="https://blog.cyscomvit.com/"
             target="_blank"
@@ -189,7 +204,7 @@ And the next one? Already on the way."
           </a>
         </BentoTilt>
 
-        <BentoTilt className="bento-tilt_1 me-14 md:col-span-1 md:me-0">
+        <BentoTilt className="bento-tilt_1 col-span-1 md:col-span-1 h-48 md:h-auto">
           <a
             href="https://blog.cyscomvit.com/"
             target="_blank"
@@ -220,7 +235,7 @@ And the next one? Already on the way."
           </div>
         </BentoTilt>
 
-        <BentoTilt className="bento-tilt_2">
+        <BentoTilt className="bento-tilt_2 col-span-1 h-48 md:h-auto">
           <a
             href="https://blog.cyscomvit.com/"
             target="_blank"

@@ -27,9 +27,9 @@ const About = () => {
   });
 
   return (
-    <div id="about" className="min-h-screen  bg-black">
-      <div className="relative mb-8 mt-36 flex flex-col items-center gap-5">
-        <p className="font-general text-sm text-white uppercase md:text-[10px]">
+    <div id="about" className="min-h-screen bg-black">
+      <div className="relative mb-8 mt-12 md:mt-36 flex flex-col items-center gap-3 md:gap-5 px-4">
+        <p className="font-general text-xs md:text-sm text-white uppercase">
           Welcome to CYSCOM
         </p>
 
@@ -38,9 +38,9 @@ const About = () => {
           containerClass="mt-5 !text-white text-center"
         />
 
-        <div className="about-subtext text-white">
-          <p>The Game of Defense begins—your life, now an epic CTF</p>
-          <p className="text-white">
+        <div className="about-subtext text-white text-center px-4">
+          <p className="text-sm md:text-base">The Game of Defense begins—your life, now an epic CTF</p>
+          <p className="text-white text-sm md:text-base">
             CYSCOM unifies people from different domains on the aspect of CyberSecurity issues arising due to recent practices.
           </p>
         </div>
