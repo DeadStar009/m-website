@@ -11,35 +11,59 @@ import PastEvents from "./components/PastEvents";
 import ScrollToTop from "./components/ScrollToTop";
 import { StickyScrollRevealDemo } from "./components/sticky_scroll";
 import OurTeam from "./components/OurTeam";
-// Main preloader removed; hero handles initial loading
+import Preloader from "./components/Preloader";
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Removed global preloading; handled inside Hero
+  // Define all assets to preload from Hero, Features, Story, Navbar, etc.
+  const assets = [
+    // Hero Video
+    { type: 'video', src: 'videos/main.webm' },
+    // Features Assets
+    { type: 'image', src: 'img/newsletter.webp' },
+    { type: 'video', src: 'videos/ctf.webm' },
+    { type: 'video', src: 'videos/proj.webm' },
+    { type: 'image', src: 'img/leaderboard2.webp' },
+    { type: 'image', src: 'img/blogs.webp' },
+    // Story Asset
+    { type: 'image', src: '/img/fast.webp' },
+    // Navbar/Global Assets
+    { type: 'image', src: '/img/logo.png' },
+    { type: 'audio', src: '/audio/loop.mp3' },
+  ];
 
-  // Render app directly; hero controls initial loading
+  const handlePreloaderComplete = () => {
+    setIsLoading(false);
+  };
 
   return (
     <main className="relative min-h-screen w-screen overflow-x-hidden">
-      <NavBar />
-      <Routes>
-        <Route path="/" element={
-          <>
-            <Hero />
-            <About />
-            <div className="relative">
-              <Features />
-              <Story />
-              <StickyScrollRevealDemo />
-              <PastEvents />
-              <Contact />
-              <Footer />
-            </div>
-          </>
-        } />
-        <Route path="/our-team" element={<OurTeam />} />
-      </Routes>
-      <ScrollToTop />
+      {isLoading ? (
+        <Preloader assets={assets} onComplete={handlePreloaderComplete} />
+      ) : (
+        <>
+          <NavBar />
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Hero />
+                <About />
+                <div className="relative">
+                  <Features />
+                  <Story />
+                  <StickyScrollRevealDemo />
+                  <PastEvents />
+                  <Contact />
+                  <Footer />
+                </div>
+              </>
+            } />
+            <Route path="/our-team" element={<OurTeam />} />
+          </Routes>
+          <ScrollToTop />
+        </>
+      )}
     </main>
   );
 }

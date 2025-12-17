@@ -10,7 +10,7 @@ import ParticleBackground from "./ParticleBackground";
 gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isHacked, setIsHacked] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
