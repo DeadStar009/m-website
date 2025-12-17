@@ -1,7 +1,125 @@
 import { useEffect, useState } from "react";
 import gsap from "gsap";
 
-const Preloader = ({ progress = 0, onComplete }) => {
+const Preloader = ({ assets = [], onComplete }) => {
+  const [progress, setProgress] = useState(0);
+  const [loadedCount, setLoadedCount] = useState(0);
+
+  useEffect(() => {
+    if (!assets || assets.length === 0) {
+      // If no assets to load, complete immediately
+      setProgress(100);
+      return;
+    }
+
+    let loaded = 0;
+    const totalAssets = assets.length;
+
+    // Function to update progress
+    const updateProgress = () => {
+      loaded++;
+      const currentProgress = Math.round((loaded / totalAssets) * 100);
+      setProgress(currentProgress);
+      setLoadedCount(loaded);
+    };
+
+    // Preload images
+    const loadImage = (src) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          updateProgress();
+          resolve(src);
+        };
+        img.onerror = () => {
+          console.warn(`Failed to load image: ${src}`);
+          updateProgress(); // Still count as processed
+          resolve(src);
+        };
+        img.src = src;
+      });
+    };
+
+    // Preload videos
+    const loadVideo = (src) => {
+      return new Promise((resolve, reject) => {
+        const video = document.createElement('video');
+        video.onloadeddata = () => {
+          updateProgress();
+          resolve(src);
+        };
+        video.onerror = () => {
+          console.warn(`Failed to load video: ${src}`);
+          updateProgress(); // Still count as processed
+          resolve(src);
+        };
+        video.src = src;
+        video.load();
+      });
+    };
+
+    // Preload audio
+    const loadAudio = (src) => {
+      return new Promise((resolve, reject) => {
+        const audio = new Audio();
+        audio.oncanplaythrough = () => {
+          updateProgress();
+          resolve(src);
+        };
+        audio.onerror = () => {
+          console.warn(`Failed to load audio: ${src}`);
+          updateProgress();
+          resolve(src);
+        };
+        audio.src = src;
+        audio.load();
+      });
+    };
+
+    // Preload fonts
+    const loadFont = (fontFamily, src) => {
+      return new Promise((resolve) => {
+        const font = new FontFace(fontFamily, `url(${src})`);
+        font.load()
+          .then(() => {
+            document.fonts.add(font);
+            updateProgress();
+            resolve(src);
+          })
+          .catch(() => {
+            console.warn(`Failed to load font: ${src}`);
+            updateProgress();
+            resolve(src);
+          });
+      });
+    };
+
+    // Start loading all assets
+    const loadAllAssets = async () => {
+      const promises = assets.map((asset) => {
+        const { type, src, fontFamily } = asset;
+        
+        switch (type) {
+          case 'image':
+            return loadImage(src);
+          case 'video':
+            return loadVideo(src);
+          case 'audio':
+            return loadAudio(src);
+          case 'font':
+            return loadFont(fontFamily, src);
+          default:
+            updateProgress();
+            return Promise.resolve();
+        }
+      });
+
+      await Promise.all(promises);
+    };
+
+    loadAllAssets();
+  }, [assets]);
+
   useEffect(() => {
     if (progress >= 100) {
       // Animate out the preloader
@@ -11,7 +129,7 @@ const Preloader = ({ progress = 0, onComplete }) => {
           duration: 0.8,
           ease: "power2.inOut",
           onComplete: () => {
-            onComplete();
+            onComplete?.();
           },
         });
       }, 300);

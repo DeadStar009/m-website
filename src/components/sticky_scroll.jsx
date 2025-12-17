@@ -8,7 +8,7 @@ const content = [
     description:
       "Leading the way in innovation and technology. Our past sponsors include industry leaders who have supported our mission to foster a community of developers and creators.",
     content: (
-      <div className="flex size-full items-center justify-center bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] text-white">
+      <div className="flex size-full items-center justify-center text-white">
         <img
             src="/img/logo.png"
             width={300}
@@ -40,8 +40,8 @@ const content = [
     description:
       "Empowering designers and artists worldwide. Our collaboration with creative studios has enabled us to bring unique and visually stunning experiences to our audience.",
     content: (
-      <div className="flex size-full items-center justify-center bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] text-white">
-         <div className="text-4xl font-bold text-black">Creative Studios</div>
+      <div className="flex size-full items-center justify-center text-white">
+         <div className="text-4xl font-bold text-white">Creative Studios</div>
       </div>
     ),
   },
@@ -50,7 +50,7 @@ const content = [
     description:
       "Connecting people and ideas across the globe. Our sponsors help us reach a wider audience and build a diverse and inclusive community.",
     content: (
-      <div className="flex size-full items-center justify-center bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] text-white">
+      <div className="flex size-full items-center justify-center text-white">
         <div className="text-4xl font-bold">Global Networks</div>
       </div>
     ),
@@ -76,7 +76,7 @@ export function StickyScrollRevealDemo() {
       </div>
       <StickyScroll 
         content={content} 
-        contentClassName="rounded-xl shadow-lg bg-gradient-to-br from-blue-900 via-purple-900 to-black glow-effect" 
+        contentClassName="" 
       />
       <div className="section-divider absolute bottom-0" />
     </div>

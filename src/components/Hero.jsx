@@ -165,7 +165,7 @@ const Hero = () => {
         
         <video
           ref={videoRef}
-          src="videos/trial.mp4"
+          src="videos/main.webm"
           preload="auto"
           autoPlay
           

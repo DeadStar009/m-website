@@ -165,7 +165,7 @@ const Features = () => (
             className="block size-full"
           >
           <BentoCard
-            src="videos/feature-2.mp4"
+            src="videos/ctf.webm"
             title={
               <>
                 CT<b>F</b>s AND EV<b>E</b>NTS
@@ -190,7 +190,7 @@ And the next one? Already on the way."
           >
 
           <BentoCard
-            src="videos/feature-4.mp4"
+            src="videos/proj.webm"
             title={
               <>
                 PROJE<b>C</b>TS
@@ -242,7 +242,7 @@ And the next one? Already on the way."
             rel="noopener noreferrer"
             className="block size-full"
           >
-            <BentoCard src="img/blogs.jpg" />
+            <BentoCard src="img/blogs.webp" />
           </a>
         </BentoTilt>
       </div>

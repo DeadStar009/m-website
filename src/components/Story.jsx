@@ -13,7 +13,7 @@ const FloatingImage = () => {
 
     if (!element) return;
 
-    const rect = element.getBoundingClientRect();
+    const rect = element.parentElement.getBoundingClientRect();
     const xPos = clientX - rect.left;
     const yPos = clientY - rect.top;
 
@@ -50,26 +50,28 @@ const FloatingImage = () => {
       <div className="section-divider absolute top-0" />
       <div className="flex size-full flex-col items-center py-8 md:py-20 pb-16 md:pb-32 px-4">
         <p className="font-general text-xs md:text-sm uppercase text-glow animate-fade-in-up">
-          the multiversal ip world
+          From challenge to clarity
         </p>
 
         <div className="relative size-full">
           <AnimatedTitle
-            title="the st<b>o</b>ry of <br /> a <b>c</b>yber real<b>m</b>"
+            title="Access our <br />Ctf writeups here"
             containerClass="mt-8 md:mt-16 pointer-events-none mix-blend-difference relative z-10"
           />
 
           <div className="story-img-container">
             <div className="story-img-mask">
-              <div className="story-img-content">
+              <div
+                className="story-img-content"
+                onMouseLeave={handleMouseLeave}
+                onMouseUp={handleMouseLeave}
+                onMouseEnter={handleMouseLeave}
+                onMouseMove={handleMouseMove}
+              >
                 <img
                   ref={frameRef}
-                  onMouseMove={handleMouseMove}
-                  onMouseLeave={handleMouseLeave}
-                  onMouseUp={handleMouseLeave}
-                  onMouseEnter={handleMouseLeave}
-                  src="/img/lorenzo-herrera-p0j-mE6mGo4-unsplash.jpg"
-                  alt="lorenzo-herrera-p0j-mE6mGo4-unsplash.jpg"
+                  src="/img/fast.webp"
+                  alt="/img/fast.webp"
                   loading="lazy"
                   decoding="async"
                   className="object-contain w-full h-full"
@@ -79,7 +81,7 @@ const FloatingImage = () => {
             </div>
 
             {/* for the rounded corner */}
-            <svg
+            {/* <svg
               className="invisible absolute size-0"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -103,16 +105,16 @@ const FloatingImage = () => {
                   />
                 </filter>
               </defs>
-            </svg>
+            </svg> */}
           </div>
         </div>
 
-        <div className="animate-fade-in-up mt-12" style={{ animationDelay: '0.4s' }}>
+        {/* <div className="animate-fade-in-up mt-12" style={{ animationDelay: '0.4s' }}>
           <Button 
             title="Discover More" 
             containerClass="" 
           />
-        </div>
+        </div> */}
       </div>
       <div className="section-divider absolute bottom-0" />
     </div>

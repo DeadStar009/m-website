@@ -224,6 +224,18 @@ const PastEvents = () => {
 
   const events = [
     {
+      name: "Final Trace",
+      date: "April 19-20, 2022",
+      description: "A 2 day CTF Event in TechnoVIT'25 based boasting an immense and intricate storyline and massive amount of CTF's",
+      image: "/img/final.webp"
+    },
+    {
+      name: "Cyber-Converge",
+      date: "April 19-20, 2022",
+      description: "A 2-day technical and fun event for cyber enthusiasts, including a workshop and CTF.",
+      image: "/img/logo.png"
+    },
+    {
       name: "Cyber Defender",
       date: "April 19-20, 2022",
       description: "A 2-day technical and fun event for cyber enthusiasts, including a workshop and CTF.",
@@ -239,25 +251,25 @@ const PastEvents = () => {
       name: "CodeNConquer",
       date: "November 15, 2024",
       description: "An intensive coding competition testing algorithmic skills and problem-solving abilities.",
-      image: "/img/gallery-2.webp"
+      image: "/img/final.webp"
     },
     {
       name: "CyberConverge",
       date: "September 20, 2024",
       description: "CTF and hacking event with learning and collaboration opportunities for cybersecurity enthusiasts.",
-      image: "/img/gallery-3.webp"
+      image: "/img/final.webp"
     },
     {
       name: "Intrusion",
       date: "August 11, 2024",
       description: "A comprehensive cybersecurity workshop and CTF challenge focused on penetration testing.",
-      image: "/img/gallery-4.webp"
+      image: "/img/intrusion.png"
     },
     {
       name: "HackFiesta'24",
       date: "December 1-2, 2024",
       description: "Our flagship 24-hour hackathon featuring innovative projects and collaborative problem-solving.",
-      image: "/img/gallery-5.webp"
+      image: "/img/final.webp"
     }
   ];
 

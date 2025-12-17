@@ -49,7 +49,7 @@ const About = () => {
       <div className="h-dvh w-screen" id="clip">
         <div className="mask-clip-path about-image">
           <img
-            src="img/mid.jpg"
+            src="img/mid.webp"
             alt="Background"
             loading="lazy"
             decoding="async"
