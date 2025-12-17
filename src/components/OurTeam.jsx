@@ -6,14 +6,14 @@ import Footer from "./Footer";
 gsap.registerPlugin(ScrollTrigger);
 
 const teamMembers = [
-  { name: "Member 1", role: "President", img: "/img/gallery-1.webp" },
-  { name: "Member 2", role: "Vice President", img: "/img/gallery-2.webp" },
-  { name: "Member 3", role: "Tech Lead", img: "/img/gallery-3.webp" },
-  { name: "Member 4", role: "Design Lead", img: "/img/gallery-4.webp" },
-  { name: "Member 5", role: "Web Lead", img: "/img/gallery-5.webp" },
-  { name: "Member 6", role: "Event Lead", img: "/img/gallery-1.webp" },
-  { name: "Member 7", role: "Content Lead", img: "/img/gallery-2.webp" },
-  { name: "Member 8", role: "Marketing Lead", img: "/img/gallery-3.webp" },
+  { name: "Member 1", role: "President", img: "/img/swordman.webp" },
+  { name: "Member 2", role: "Vice President", img: "/img/ swordman.webp" },
+  { name: "Member 3", role: "Tech Lead", img: "/img/swordman.webp" },
+  { name: "Member 4", role: "Design Lead", img: "/img/swordman.webp" },
+  { name: "Member 5", role: "Web Lead", img: "/img/swordman.webp" },
+  { name: "Member 6", role: "Event Lead", img: "/img/swordman.webp" },
+  { name: "Member 7", role: "Content Lead", img: "/img/swordman.webp" },
+  { name: "Member 8", role: "Marketing Lead", img: "/img/swordman.webp" },
 ];
 
 const OurTeam = () => {
