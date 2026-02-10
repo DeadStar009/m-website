@@ -14,9 +14,19 @@ const Preloader = ({ assets = [], onComplete }) => {
 
     let loaded = 0;
     const totalAssets = assets.length;
+    let isMounted = true;
+
+    // Safety timeout: If loading takes too long (e.g., 10 seconds), force finish
+    const safetyTimeout = setTimeout(() => {
+        if (isMounted) {
+            console.warn("Preloader safety timeout triggered - forcing completion");
+            setProgress(100);
+        }
+    }, 10000);
 
     // Function to update progress
     const updateProgress = () => {
+      if (!isMounted) return;
       loaded++;
       const currentProgress = Math.round((loaded / totalAssets) * 100);
       setProgress(currentProgress);
@@ -26,14 +36,14 @@ const Preloader = ({ assets = [], onComplete }) => {
     const loadImage = (src) => {
       return new Promise((resolve) => {
         const img = new Image();
-        img.onload = () => {
-          updateProgress();
-          resolve(src);
+        const done = () => {
+            updateProgress();
+            resolve(src);
         };
+        img.onload = done;
         img.onerror = () => {
           console.warn(`Failed to load image: ${src}`);
-          updateProgress(); // Still count as processed
-          resolve(src);
+          done();
         };
         img.src = src;
       });
@@ -43,14 +53,14 @@ const Preloader = ({ assets = [], onComplete }) => {
     const loadVideo = (src) => {
       return new Promise((resolve) => {
         const video = document.createElement('video');
-        video.onloadeddata = () => {
-          updateProgress();
-          resolve(src);
+        const done = () => {
+            updateProgress();
+            resolve(src);
         };
+        video.onloadeddata = done;
         video.onerror = () => {
           console.warn(`Failed to load video: ${src}`);
-          updateProgress(); // Still count as processed
-          resolve(src);
+          done();
         };
         video.src = src;
         video.load();
@@ -61,14 +71,14 @@ const Preloader = ({ assets = [], onComplete }) => {
     const loadAudio = (src) => {
       return new Promise((resolve) => {
         const audio = new Audio();
-        audio.oncanplaythrough = () => {
-          updateProgress();
-          resolve(src);
+        const done = () => {
+            updateProgress();
+            resolve(src);
         };
+        audio.oncanplaythrough = done;
         audio.onerror = () => {
           console.warn(`Failed to load audio: ${src}`);
-          updateProgress();
-          resolve(src);
+          done();
         };
         audio.src = src;
         audio.load();
@@ -79,16 +89,18 @@ const Preloader = ({ assets = [], onComplete }) => {
     const loadFont = (fontFamily, src) => {
       return new Promise((resolve) => {
         const font = new FontFace(fontFamily, `url(${src})`);
+        const done = () => {
+            updateProgress();
+            resolve(src);
+        };
         font.load()
           .then(() => {
             document.fonts.add(font);
-            updateProgress();
-            resolve(src);
+            done();
           })
           .catch(() => {
             console.warn(`Failed to load font: ${src}`);
-            updateProgress();
-            resolve(src);
+            done();
           });
       });
     };
@@ -117,6 +129,11 @@ const Preloader = ({ assets = [], onComplete }) => {
     };
 
     loadAllAssets();
+    
+    return () => {
+        isMounted = false;
+        clearTimeout(safetyTimeout);
+    };
   }, [assets]);
 
   useEffect(() => {

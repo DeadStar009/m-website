@@ -50,6 +50,7 @@ img, video {
   @font-face {
     font-family: "zentry";
     src: url("/fonts/zentry-regular.woff2") format("woff2");
+    font-display: swap;
   }
 }
 
