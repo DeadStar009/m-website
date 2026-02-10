@@ -4,6 +4,8 @@ import gsap from "gsap";
 const Preloader = ({ assets = [], onComplete }) => {
   const containerRef = useRef(null);
   const [progress, setProgress] = useState(0);
+  const [currentFile, setCurrentFile] = useState('');
+  const [loadedFiles, setLoadedFiles] = useState([]);
 
   useEffect(() => {
     if (!assets || assets.length === 0) {
@@ -17,65 +19,80 @@ const Preloader = ({ assets = [], onComplete }) => {
     let isMounted = true;
 
     // Function to update progress
-    const updateProgress = () => {
+    const updateProgress = (filename) => {
       if (!isMounted) return;
       loaded++;
       const currentProgress = Math.round((loaded / totalAssets) * 100);
+      console.log(`✓ Loaded (${loaded}/${totalAssets}): ${filename} - ${currentProgress}%`);
       setProgress(currentProgress);
+      setLoadedFiles(prev => [...prev, filename]);
     };
 
     // Generic fetch-based loader for robust caching
-    const loadWithFetch = (src) => {
+    const loadWithFetch = (src, type) => {
         return new Promise((resolve) => {
+            const filename = src.split('/').pop();
+            console.log(`⏳ Loading ${type}: ${filename}`);
+            setCurrentFile(filename);
+            
+            const startTime = Date.now();
             fetch(src)
                 .then(response => {
                     if (!response.ok) throw new Error(`Status ${response.status}`);
+                    const contentLength = response.headers.get('content-length');
+                    const sizeMB = contentLength ? (contentLength / 1024 / 1024).toFixed(2) : '???';
+                    console.log(`📦 Downloading ${filename} (${sizeMB} MB)...`);
                     return response.blob(); // Force full download
                 })
-                .then(() => {
-                    updateProgress();
+                .then((blob) => {
+                    const timeTaken = ((Date.now() - startTime) / 1000).toFixed(2);
+                    console.log(`✅ Completed ${filename} in ${timeTaken}s`);
+                    updateProgress(filename);
                     resolve(src);
                 })
                 .catch((err) => {
-                    console.warn(`Failed to fetch asset: ${src}`, err);
-                    updateProgress();
+                    console.error(`❌ Failed to fetch ${filename}:`, err);
+                    updateProgress(filename);
                     resolve(src);
                 });
         });
     };
 
-    // Preload images - simpler Image object is usually fine, 
-    // but fetch ensures 100% data presence for heavy PNG/WEBP
+    // Preload images
     const loadImage = (src) => {
-       return loadWithFetch(src);
+       return loadWithFetch(src, 'IMAGE');
     };
 
-    // Preload videos - CRITICAL FIX: Use fetch instead of document.createElement('video')
-    // This forces the browser to download the entire file into the disk cache.
+    // Preload videos
     const loadVideo = (src) => {
-       return loadWithFetch(src);
+       return loadWithFetch(src, 'VIDEO');
     };
 
-    // Preload audio - Use fetch for same reason
+    // Preload audio
     const loadAudio = (src) => {
-       return loadWithFetch(src);
+       return loadWithFetch(src, 'AUDIO');
     };
 
     // Preload fonts
     const loadFont = (fontFamily, src) => {
       return new Promise((resolve) => {
+        const filename = src.split('/').pop();
+        console.log(`⏳ Loading FONT: ${filename}`);
+        setCurrentFile(filename);
+        
         const font = new FontFace(fontFamily, `url(${src})`);
         const done = () => {
-            updateProgress();
+            updateProgress(filename);
             resolve(src);
         };
         font.load()
           .then(() => {
             document.fonts.add(font);
+            console.log(`✅ Font loaded: ${filename}`);
             done();
           })
-          .catch(() => {
-            console.warn(`Failed to load font: ${src}`);
+          .catch((err) => {
+            console.error(`❌ Failed to load font ${filename}:`, err);
             done();
           });
       });
@@ -83,6 +100,9 @@ const Preloader = ({ assets = [], onComplete }) => {
 
     // Start loading all assets
     const loadAllAssets = async () => {
+      console.log(`🚀 Starting preload of ${totalAssets} assets...`);
+      console.log('Assets to load:', assets.map(a => a.src).join(', '));
+      
       const promises = assets.map((asset) => {
         const { type, src, fontFamily } = asset;
         
@@ -96,12 +116,14 @@ const Preloader = ({ assets = [], onComplete }) => {
           case 'font':
             return loadFont(fontFamily, src);
           default:
-            updateProgress();
+            const filename = src?.split('/').pop() || 'unknown';
+            updateProgress(filename);
             return Promise.resolve();
         }
       });
 
       await Promise.all(promises);
+      console.log('🎉 All assets loaded successfully!');
     };
 
     loadAllAssets();
@@ -236,17 +258,29 @@ const Preloader = ({ assets = [], onComplete }) => {
           </div>
         </div>
 
-        {/* Terminal / Status Lines (Decorative) */}
-        <div className="h-6 w-64 overflow-hidden relative">
-            <div className="absolute inset-0 flex flex-col items-center animate-slide-up text-[10px] text-blue-400/60 font-mono leading-none gap-1">
-                <span>[ OK ] Loading Modules...</span>
-                <span>[ OK ] Verifying Assets...</span>
-                <span>[ OK ] Decrypting Payload...</span>
-                <span>[ OK ] Handshake Complete.</span>
-                <span>[ OK ] Access Granted.</span>
+        {/* Current Loading File Display */}
+        <div className="w-full max-w-md px-4">
+          <div className="bg-slate-900/30 border border-blue-900/30 rounded-lg p-3 backdrop-blur-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+              <span className="text-cyan-300 text-xs font-mono uppercase tracking-wide">Current File</span>
             </div>
-            {/* Gradient mask for fading text */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none"></div>
+            <div className="text-blue-100 text-sm font-mono truncate">
+              {currentFile || 'Initializing...'}
+            </div>
+          </div>
+        </div>
+
+        {/* Recently Loaded Files (Last 3) */}
+        <div className="w-full max-w-md px-4 mt-3">
+          <div className="flex flex-col gap-1">
+            {loadedFiles.slice(-3).reverse().map((file, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-[10px] font-mono text-blue-400/60 animate-fade-in">
+                <span className="text-green-400">\u2713</span>
+                <span className="truncate">{file}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>
@@ -259,12 +293,12 @@ const Preloader = ({ assets = [], onComplete }) => {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
         }
-        .animate-slide-up {
-            animation: slideUp 2s steps(4, end) infinite;
+        .animate-fade-in {
+          animation: fadeIn 0.3s ease-in;
         }
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(-100%); }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-5px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         .perspective-1000 {
             perspective: 1000px;
