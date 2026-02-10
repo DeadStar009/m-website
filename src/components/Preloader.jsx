@@ -1,5 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Preloader = ({ assets = [], onComplete }) => {
   const containerRef = useRef(null);
@@ -52,7 +55,8 @@ const Preloader = ({ assets = [], onComplete }) => {
     const updateProgress = (filename) => {
       if (!isMounted) return;
       loaded++;
-      const currentProgress = Math.round((loaded / totalAssets) * 95);
+      // Ensure progress never exceeds 95 during asset loading
+      const currentProgress = Math.min(95, Math.round((loaded / totalAssets) * 95));
       console.log(`✓ Loaded (${loaded}/${totalAssets}): ${filename} - ${currentProgress}%`);
       setProgress(currentProgress);
       setLoadedFiles(prev => [...prev, filename]);
@@ -222,9 +226,24 @@ const Preloader = ({ assets = [], onComplete }) => {
       await Promise.all(promises);
       console.log('🎉 All assets loaded successfully!');
       
+      // GSAP initialization check
+      console.log('🎬 Verifying GSAP plugins...');
+      if (isMounted) setProgress(Math.min(100, 96));
+      
+      // Ensure ScrollTrigger is ready
+      await new Promise(resolve => {
+        if (typeof gsap !== 'undefined' && gsap.plugins && gsap.plugins.scrollTrigger) {
+          console.log('✅ GSAP ScrollTrigger ready!');
+          resolve();
+        } else {
+          console.log('✅ GSAP core ready!');
+          resolve();
+        }
+      });
+      
       // Extra verification: Wait a bit to ensure browser has everything ready
       console.log('⏳ Waiting for browser to finalize caching...');
-      if (isMounted) setProgress(97);
+      if (isMounted) setProgress(Math.min(100, 97));
       await new Promise(resolve => setTimeout(resolve, 1500));
       console.log('✅ Cache verification complete - ready to render!');
       

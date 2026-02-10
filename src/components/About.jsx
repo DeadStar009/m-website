@@ -6,32 +6,25 @@ import AnimatedTitle from "./AnimatedTitle";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const About = ({ gsapReady = true }) => {
+const About = () => {
   useGSAP(() => {
-    if (!gsapReady) return;
-    
-    // Delay to ensure DOM layout is complete
-    const timer = setTimeout(() => {
-      const clipAnimation = gsap.timeline({
-        scrollTrigger: {
-          trigger: "#clip",
-          start: "center center",
-          end: "+=800 center",
-          scrub: 0.5,
-          pin: true,
-          pinSpacing: true,
-        },
-      });
+    const clipAnimation = gsap.timeline({
+      scrollTrigger: {
+        trigger: "#clip",
+        start: "center center",
+        end: "+=800 center",
+        scrub: 0.5,
+        pin: true,
+        pinSpacing: true,
+      },
+    });
 
-      clipAnimation.to(".mask-clip-path", {
-        width: "100vw",
-        height: "100vh",
-        borderRadius: 0,
-      });
-    }, 50);
-    
-    return () => clearTimeout(timer);
-  }, [gsapReady]);
+    clipAnimation.to(".mask-clip-path", {
+      width: "100vw",
+      height: "100vh",
+      borderRadius: 0,
+    });
+  });
 
   return (
     <div id="about" className="min-h-screen bg-black">
@@ -41,7 +34,7 @@ const About = ({ gsapReady = true }) => {
         </p>
 
         <AnimatedTitle
-          title="Disc<b>o</b>ver the VIT'S <br /> ONLY CYBERSECURITY <b>C</b>LUB"
+          title="<b>Discover the VIT Chennai'S ONLY CYBERSECURITY CLUB</b>"
           containerClass="mt-5 !text-white text-center"
         />
 
@@ -54,7 +47,7 @@ const About = ({ gsapReady = true }) => {
       </div>
 
       <div className="h-dvh w-screen" id="clip">
-        <div className="mask-clip-path about-image" style={{ willChange: 'width, height, border-radius' }}>
+        <div className="mask-clip-path about-image">
           <img
             src="/img/mid.webp"
             alt="Background"

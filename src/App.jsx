@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ScrollTrigger } from "gsap/all";
 import About from "./components/About";
 import Hero from "./components/Hero";
 import NavBar from "./components/Navbar";
@@ -16,7 +15,6 @@ import Preloader from "./components/Preloader";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [gsapReady, setGsapReady] = useState(false);
 
   // Define all assets to preload from Hero, Features, Story, Navbar, etc.
   const assets = [
@@ -30,27 +28,22 @@ function App() {
     { type: 'image', src: '/img/blogs.webp' },
     // Story Asset
     { type: 'image', src: '/img/fast.webp' },
-    // About Asset
-    { type: 'image', src: '/img/mid.webp' },
-    // Contact Assets
-    { type: 'image', src: '/img/contact-1.webp' },
-    { type: 'image', src: '/img/contact-2.webp' },
-    { type: 'image', src: '/img/swordman-partial.webp' },
-    { type: 'image', src: '/img/swordman.webp' },
     // Navbar/Global Assets
     { type: 'image', src: '/img/logo.png' },
+    // About Component - Heavy asset
+    { type: 'image', src: '/img/mid.webp' },
+    // PastEvents - Largest asset (6MB!)
+    { type: 'image', src: '/img/intrusion.png' },
+    // OurTeam - Heavy asset
+    { type: 'image', src: '/img/team018.jpg' },
+    // Contact Component Assets
+    { type: 'image', src: '/img/contact-1.webp' },
+    { type: 'image', src: '/img/contact-2.webp' },
+    { type: 'image', src: '/img/swordman.webp' },
   ];
 
   const handlePreloaderComplete = () => {
     setIsLoading(false);
-    // Let DOM render, then refresh ScrollTrigger calculations
-    setTimeout(() => {
-      setGsapReady(true);
-      if (ScrollTrigger) {
-        console.log('🔄 Refreshing ScrollTrigger after content render...');
-        ScrollTrigger.refresh();
-      }
-    }, 100);
   };
 
   return (
@@ -63,8 +56,8 @@ function App() {
           <Routes>
             <Route path="/" element={
               <>
-                <Hero gsapReady={gsapReady} />
-                <About gsapReady={gsapReady} />
+                <Hero />
+                <About />
                 <div className="relative">
                   <Features />
                   <Story />
