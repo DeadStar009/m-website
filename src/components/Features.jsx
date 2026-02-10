@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { TiLocationArrow } from "react-icons/ti";
 
 export const BentoTilt = ({ children, className = "" }) => {
-  const [transformStyle, setTransformStyle] = useState("");
   const itemRef = useRef(null);
 
   const handleMouseMove = (event) => {
@@ -18,11 +17,13 @@ export const BentoTilt = ({ children, className = "" }) => {
     const tiltY = (relativeX - 0.5) * -5;
 
     const newTransform = `perspective(700px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(.95, .95, .95)`;
-    setTransformStyle(newTransform);
+    itemRef.current.style.transform = newTransform;
   };
 
   const handleMouseLeave = () => {
-    setTransformStyle("");
+    if (itemRef.current) {
+      itemRef.current.style.transform = "";
+    }
   };
 
   return (
@@ -34,7 +35,7 @@ export const BentoTilt = ({ children, className = "" }) => {
       }
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ transform: transformStyle, boxShadow: '0 4px 24px 0 rgba(236,72,153,0.15)' }}
+      style={{ boxShadow: '0 4px 24px 0 rgba(236,72,153,0.15)' }}
     >
       {children}
     </div>
@@ -42,23 +43,26 @@ export const BentoTilt = ({ children, className = "" }) => {
 };
 
 export const BentoCard = ({ src, title, description, isComingSoon }) => {
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-  const [hoverOpacity, setHoverOpacity] = useState(0);
   const hoverButtonRef = useRef(null);
+  const gradientRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleMouseMove = (event) => {
-    if (!hoverButtonRef.current) return;
+    if (!hoverButtonRef.current || !gradientRef.current) return;
     const rect = hoverButtonRef.current.getBoundingClientRect();
-
-    setCursorPosition({
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-    });
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    gradientRef.current.style.background = `radial-gradient(100px circle at ${x}px ${y}px, #656fe288, #00000026)`;
   };
 
-  const handleMouseEnter = () => setHoverOpacity(1);
-  const handleMouseLeave = () => setHoverOpacity(0);
+  const handleMouseEnter = () => {
+    if (gradientRef.current) gradientRef.current.style.opacity = 1;
+  };
+  
+  const handleMouseLeave = () => {
+    if (gradientRef.current) gradientRef.current.style.opacity = 0;
+  };
 
   return (
     <div className="relative size-full group transition-all duration-300 rounded-xl overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-black shadow-lg hover:scale-105 hover:shadow-pink-500/30 hover:ring-2 hover:ring-pink-400">
@@ -68,6 +72,7 @@ export const BentoCard = ({ src, title, description, isComingSoon }) => {
           loop
           muted
           autoPlay
+          playsInline
           className="absolute left-0 top-0 size-full object-cover object-center"
         />
       ) : (
@@ -94,10 +99,10 @@ export const BentoCard = ({ src, title, description, isComingSoon }) => {
           >
             {/* Radial gradient hover effect */}
             <div
+              ref={gradientRef}
               className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
               style={{
-                opacity: hoverOpacity,
-                background: `radial-gradient(100px circle at ${cursorPosition.x}px ${cursorPosition.y}px, #656fe288, #00000026)`,
+                background: `radial-gradient(100px circle at 0px 0px, #656fe288, #00000026)`,
               }}
             />
             <TiLocationArrow className="relative z-20" />
@@ -165,7 +170,7 @@ const Features = () => (
             className="block size-full"
           >
           <BentoCard
-            src="videos/ctf.webm"
+            src="videos/feature-2.mp4"
             title={
               <>
                 CT<b>F</b>s AND EV<b>E</b>NTS
@@ -190,7 +195,7 @@ And the next one? Already on the way."
           >
 
           <BentoCard
-            src="videos/proj.webm"
+            src="videos/feature-4.mp4"
             title={
               <>
                 PROJE<b>C</b>TS
@@ -242,7 +247,7 @@ And the next one? Already on the way."
             rel="noopener noreferrer"
             className="block size-full"
           >
-            <BentoCard src="img/blogs.webp" />
+            <BentoCard src="img/blogs.jpg" />
           </a>
         </BentoTilt>
       </div>

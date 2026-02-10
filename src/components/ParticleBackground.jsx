@@ -61,8 +61,8 @@ const ParticleBackground = () => {
       }
     }
 
-    const particleCount = 100;
-    const spawnInterval = 5; // Frames between spawning particles
+    const particleCount = 40; // Reduced from 100 for performance
+    const spawnInterval = 10; // Slower spawning
     let frameCount = 0;
 
     const animate = () => {
@@ -87,10 +87,12 @@ const ParticleBackground = () => {
           if (particleA.opacity > 0 && particleB.opacity > 0) {
             const dx = particleA.x - particleB.x;
             const dy = particleA.y - particleB.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const distanceSq = dx * dx + dy * dy;
+            const maxDistance = 120;
 
-            if (distance < 120) {
-              const lineOpacity = Math.min(particleA.opacity, particleB.opacity) * 0.15 * (1 - distance / 120);
+            if (distanceSq < maxDistance * maxDistance) {
+              const distance = Math.sqrt(distanceSq);
+              const lineOpacity = Math.min(particleA.opacity, particleB.opacity) * 0.15 * (1 - distance / maxDistance);
               ctx.strokeStyle = `rgba(147, 197, 253, ${lineOpacity})`;
               ctx.lineWidth = 0.8;
               ctx.beginPath();

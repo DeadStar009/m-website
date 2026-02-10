@@ -10,16 +10,26 @@ import ParticleBackground from "./ParticleBackground";
 gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [isHacked, setIsHacked] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
   const videoRef = useRef(null);
 
   const handleVideoLoad = () => {
+    console.log("Video loaded successfully");
     // Finalize progress to 100 when video is ready
     setProgress(100);
     setLoading(false);
+  };
+
+  const handleError = (e) => {
+    console.error("Video failed to load", e);
+    // Add a small delay to ensure users see the transition even if error
+    setTimeout(() => {
+      setProgress(100);
+      setLoading(false);
+    }, 1000);
   };
 
   // Prevent scrolling while hero is loading
@@ -36,6 +46,22 @@ const Hero = () => {
     if (!loading) return;
     let rafId;
     let current = 0;
+    
+    // Fallback: If video doesn't load within 5 seconds, force complete
+    const timeoutId = setTimeout(() => {
+      if (loading) {
+        console.warn("Video load timeout - Forcing completion");
+        handleVideoLoad();
+      }
+    }, 5000);
+    
+    // Check if video is already ready (e.g. from cache)
+    if (videoRef.current && videoRef.current.readyState >= 3) {
+       console.log("Video already ready from cache");
+       handleVideoLoad();
+       return;
+    }
+
     const tick = () => {
       // Ease-in-out ramp; cap at 90 until handleVideoLoad sets 100
       current = Math.min(90, current + (current < 50 ? 2.2 : 1.2));
@@ -43,7 +69,11 @@ const Hero = () => {
       rafId = requestAnimationFrame(tick);
     };
     rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(timeoutId);
+    };
   }, [loading]);
 
   useGSAP(() => {
@@ -73,9 +103,9 @@ const Hero = () => {
             <div className="h-full w-full bg-[linear-gradient(to_right,#1e3a8a_1px,transparent_1px),linear-gradient(to_bottom,#1e3a8a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
           </div>
 
-          {/* Glowing orbs */}
-          <div className="absolute top-1/4 left-1/4 h-96 w-96 animate-pulse rounded-full bg-blue-600/20 blur-[100px]"></div>
-          <div className="absolute bottom-1/4 right-1/4 h-96 w-96 animate-pulse rounded-full bg-cyan-600/20 blur-[100px]" style={{ animationDelay: '2s' }}></div>
+          {/* Glowing orbs - Optimized with radial gradients instead of blur filters */}
+          <div className="absolute top-1/4 left-1/4 h-96 w-96 animate-pulse rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.2)_0%,transparent_70%)]"></div>
+          <div className="absolute bottom-1/4 right-1/4 h-96 w-96 animate-pulse rounded-full bg-[radial-gradient(circle,rgba(8,145,178,0.2)_0%,transparent_70%)]" style={{ animationDelay: '2s' }}></div>
 
           {/* Main content */}
           <div className="relative z-10 flex flex-col items-center gap-8">
@@ -144,7 +174,8 @@ const Hero = () => {
 
             {/* Loading text */}
             <div className="flex items-center gap-2">
-              <div className="flex gap-1">
+             rror={handleError}
+          onE <div className="flex gap-1">
                 <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></span>
                 <span className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
                 <span className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>

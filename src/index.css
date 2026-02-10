@@ -88,8 +88,8 @@ img, video {
   }
 
   .floating-nav {
-    @apply bg-black/80 rounded-lg border border-green-400/30 backdrop-blur-md shadow-lg;
-    box-shadow: 0 8px 32px rgba(0, 255, 65, 0.1);
+    @apply bg-black/90 rounded-lg border border-green-400/30 shadow-lg;
+    box-shadow: 0 8px 16px rgba(0, 255, 65, 0.1);
   }
 
   .absolute-center {
@@ -112,13 +112,14 @@ img, video {
   .hero-heading {
     /* Tailwind default breakpoints start at sm; remove non-standard xs */
     @apply uppercase font-zentry font-black text-4xl sm:text-7xl md:text-9xl lg:text-[12rem];
-    text-shadow: 0 0 40px #000, 0 0 80px #000, 0 0 120px #000, 0 0 160px #000;
-    filter: drop-shadow(0 0 40px rgba(0,0,0,1)) drop-shadow(0 0 80px rgba(0,0,0,1)) drop-shadow(0 0 120px rgba(0,0,0,1));
+    text-shadow: 0 0 20px #000;
+    /* Reduced drop-shadows for performance */
+    filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
   }
 
   .hero-text {
-    text-shadow: 0 0 30px #000, 0 0 60px #000, 0 0 90px #000, 0 0 120px #000;
-    filter: drop-shadow(0 0 30px rgba(0,0,0,1)) drop-shadow(0 0 60px rgba(0,0,0,1)) drop-shadow(0 0 90px rgba(0,0,0,1));
+    text-shadow: 0 0 10px #000;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
   }
 
   .about-subtext {
@@ -127,6 +128,7 @@ img, video {
 
   .about-image {
     @apply absolute left-1/2 top-0 z-20 h-[50vh] md:h-[60vh] w-72 md:w-96 origin-center -translate-x-1/2 overflow-hidden rounded-3xl md:w-[30vw];
+    will-change: width, height, border-radius;
   }
 
   .animated-title {
@@ -161,7 +163,7 @@ img, video {
 
   .story-img-container {
     @apply relative md:h-dvh h-[90vh] w-full;
-    filter: url("#flt_tag");
+    /* filter: url("#flt_tag"); Disabled for performance */
   }
 
   .story-img-mask {
@@ -396,8 +398,9 @@ img, video {
   }
 
   .backdrop-blur-cyber {
-    backdrop-filter: blur(12px) saturate(180%);
-    background: rgba(0, 0, 0, 0.7);
+    /* Optimized for performance: reduced blur and increased opacity */
+    backdrop-filter: blur(4px) saturate(120%);
+    background: rgba(0, 0, 0, 0.85);
     border: 1px solid rgba(59, 130, 246, 0.2);
   }
 }
@@ -628,4 +631,5 @@ img, video {
 ::-webkit-scrollbar-thumb:hover {
   background: #2563eb;
 }
+
 
