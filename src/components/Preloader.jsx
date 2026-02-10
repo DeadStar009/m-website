@@ -16,14 +16,6 @@ const Preloader = ({ assets = [], onComplete }) => {
     const totalAssets = assets.length;
     let isMounted = true;
 
-    // Safety timeout: If loading takes too long (e.g., 10 seconds), force finish
-    const safetyTimeout = setTimeout(() => {
-        if (isMounted) {
-            console.warn("Preloader safety timeout triggered - forcing completion");
-            setProgress(100);
-        }
-    }, 10000);
-
     // Function to update progress
     const updateProgress = () => {
       if (!isMounted) return;
@@ -116,7 +108,6 @@ const Preloader = ({ assets = [], onComplete }) => {
     
     return () => {
         isMounted = false;
-        clearTimeout(safetyTimeout);
     };
   }, [assets]);
 
