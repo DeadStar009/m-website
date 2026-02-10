@@ -51,7 +51,7 @@ const Hero = () => {
         
         <video
           ref={videoRef}
-          src="videos/main.webm"
+          src="/videos/main.webm"
           preload="auto"
           autoPlay
           

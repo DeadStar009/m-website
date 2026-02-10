@@ -148,7 +148,7 @@ const Features = () => (
       >
       <BentoTilt className="border-hsla relative mb-4 md:mb-7 h-64 md:h-96 lg:h-[65vh] w-full overflow-hidden rounded-md">
         <BentoCard
-          src="img/newsletter.webp"
+          src="/img/newsletter.webp"
           title={
             <>
               Mont<b>h</b>ly High<b>l</b>ights
@@ -170,7 +170,7 @@ const Features = () => (
             className="block size-full"
           >
           <BentoCard
-            src="videos/ctf.webm"
+            src="/videos/ctf.webm"
             title={
               <>
                 <b>CTFs AND EVENTS</b>
@@ -194,7 +194,7 @@ And the next one? Already on the way..."
           >
 
           <BentoCard
-            src="videos/proj.webm"
+            src="/videos/proj.webm"
             title={
               <>
                 PROJE<b>C</b>TS
@@ -216,7 +216,7 @@ And the next one? Already on the way..."
             className="block size-full"
           >
             <BentoCard
-              src="img/leaderboard2.webp"
+              src="/img/leaderboard2.webp"
               title={
                 <>
                   LEADER<b>B</b>OARD
@@ -246,7 +246,7 @@ And the next one? Already on the way..."
             rel="noopener noreferrer"
             className="block size-full"
           >
-            <BentoCard src="img/blogs.webp" />
+            <BentoCard src="/img/blogs.webp" />
           </a>
         </BentoTilt>
       </div>

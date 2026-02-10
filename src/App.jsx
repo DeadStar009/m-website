@@ -19,17 +19,17 @@ function App() {
   // Define all assets to preload from Hero, Features, Story, Navbar, etc.
   const assets = [
     // Hero Video
-    { type: 'video', src: 'videos/main.webm' },
+    { type: 'video', src: '/videos/main.webm' },
     // Features Assets
-    { type: 'image', src: 'img/newsletter.webp' },
-    { type: 'video', src: 'videos/ctf.webm' },
-    { type: 'video', src: 'videos/proj.webm' },
-    { type: 'image', src: 'img/leaderboard2.webp' },
-    { type: 'image', src: 'img/blogs.webp' },
+    { type: 'image', src: '/img/newsletter.webp' },
+    { type: 'video', src: '/videos/ctf.webm' },
+    { type: 'video', src: '/videos/proj.webm' },
+    { type: 'image', src: '/img/leaderboard2.webp' },
+    { type: 'image', src: '/img/blogs.webp' },
     // Story Asset
-    { type: 'image', src: 'img/fast.webp' },
+    { type: 'image', src: '/img/fast.webp' },
     // Navbar/Global Assets
-    { type: 'image', src: 'img/logo.png' },
+    { type: 'image', src: '/img/logo.png' },
   ];
 
   const handlePreloaderComplete = () => {

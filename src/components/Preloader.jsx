@@ -6,6 +6,35 @@ const Preloader = ({ assets = [], onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [currentFile, setCurrentFile] = useState('');
   const [loadedFiles, setLoadedFiles] = useState([]);
+  const [terminalGibberish, setTerminalGibberish] = useState('');
+  const gibberishIntervalRef = useRef(null);
+
+  // Generate random terminal-style gibberish
+  const generateGibberish = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/';
+    const hexChars = '0123456789ABCDEF';
+    const patterns = [
+      () => `0x${Array.from({length: 8}, () => hexChars[Math.floor(Math.random() * hexChars.length)]).join('')}`,
+      () => `[${Array.from({length: 12}, () => chars[Math.floor(Math.random() * chars.length)]).join('')}]`,
+      () => `${Math.random().toString(16).substring(2, 10).toUpperCase()}::${Math.random().toString(16).substring(2, 6).toUpperCase()}`,
+      () => `>> ${Array.from({length: 16}, () => chars[Math.floor(Math.random() * chars.length)]).join('')}`,
+      () => `MEM_BLOCK_${Math.floor(Math.random() * 9999).toString().padStart(4, '0')}_${hexChars[Math.floor(Math.random() * 16)]}${hexChars[Math.floor(Math.random() * 16)]}`,
+    ];
+    return patterns[Math.floor(Math.random() * patterns.length)]();
+  };
+
+  // Start terminal gibberish animation
+  useEffect(() => {
+    gibberishIntervalRef.current = setInterval(() => {
+      setTerminalGibberish(generateGibberish());
+    }, 80);
+
+    return () => {
+      if (gibberishIntervalRef.current) {
+        clearInterval(gibberishIntervalRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!assets || assets.length === 0) {
@@ -51,7 +80,9 @@ const Preloader = ({ assets = [], onComplete }) => {
           resolve(src);
         };
         
-        img.src = src;
+        // Use full URL for dynamically created image element
+        const imgUrl = new URL(src, window.location.origin).href;
+        img.src = imgUrl;
       });
     };
 
@@ -98,7 +129,9 @@ const Preloader = ({ assets = [], onComplete }) => {
           }
         }, 30000);
         
-        video.src = src;
+
+        const videoUrl = new URL(src, window.location.origin).href;
+        video.src = videoUrl;
         video.load();
       });
     };
@@ -129,7 +162,9 @@ const Preloader = ({ assets = [], onComplete }) => {
         audio.addEventListener('canplaythrough', onReady, { once: true });
         audio.addEventListener('error', onError, { once: true });
         
-        audio.src = src;
+        // Use full URL for dynamically created audio element
+        const audioUrl = new URL(src, window.location.origin).href;
+        audio.src = audioUrl;
         audio.load();
       });
     };
@@ -327,25 +362,26 @@ const Preloader = ({ assets = [], onComplete }) => {
           </div>
         </div>
 
-        {/* Current Loading File Display */}
+        {/* Terminal Gibberish Display */}
         <div className="w-full max-w-md px-4">
           <div className="bg-slate-900/30 border border-blue-900/30 rounded-lg p-3 backdrop-blur-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-              <span className="text-cyan-300 text-xs font-mono uppercase tracking-wide">Current File</span>
+              <span className="text-cyan-300 text-xs font-mono uppercase tracking-wide">System Process</span>
             </div>
-            <div className="text-blue-100 text-sm font-mono truncate">
-              {currentFile || 'Initializing...'}
+            <div className="text-green-400 text-sm font-mono truncate">
+              {terminalGibberish || 'Initializing...'}
             </div>
           </div>
         </div>
 
-        {/* Recently Loaded Files (Last 3) */}
+        {/* Loading Files Display (Last 3) */}
         <div className="w-full max-w-md px-4 mt-3">
+          <div className="text-cyan-300/70 text-[10px] font-mono uppercase tracking-wide mb-1 px-1">Loading files:</div>
           <div className="flex flex-col gap-1">
             {loadedFiles.slice(-3).reverse().map((file, idx) => (
               <div key={idx} className="flex items-center gap-2 text-[10px] font-mono text-blue-400/60 animate-fade-in">
-                <span className="text-green-400">\u2713</span>
+                <span className="text-green-400">✓</span>
                 <span className="truncate">{file}</span>
               </div>
             ))}
