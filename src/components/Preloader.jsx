@@ -48,11 +48,11 @@ const Preloader = ({ assets = [], onComplete }) => {
     const totalAssets = assets.length;
     let isMounted = true;
 
-    // Function to update progress
+    // Function to update progress (assets take 0-95%, cache verification takes 95-100%)
     const updateProgress = (filename) => {
       if (!isMounted) return;
       loaded++;
-      const currentProgress = Math.min(100, Math.round((loaded / totalAssets) * 100));
+      const currentProgress = Math.round((loaded / totalAssets) * 95);
       console.log(`✓ Loaded (${loaded}/${totalAssets}): ${filename} - ${currentProgress}%`);
       setProgress(currentProgress);
       setLoadedFiles(prev => [...prev, filename]);
@@ -224,11 +224,13 @@ const Preloader = ({ assets = [], onComplete }) => {
       
       // Extra verification: Wait a bit to ensure browser has everything ready
       console.log('⏳ Waiting for browser to finalize caching...');
+      if (isMounted) setProgress(97);
       await new Promise(resolve => setTimeout(resolve, 1500));
       console.log('✅ Cache verification complete - ready to render!');
       
-      // Signal that cache verification is done
+      // Signal that cache verification is done and set to 100%
       if (isMounted) {
+        setProgress(100);
         setCacheVerified(true);
       }
     };

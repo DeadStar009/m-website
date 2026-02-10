@@ -6,25 +6,32 @@ import AnimatedTitle from "./AnimatedTitle";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const About = () => {
+const About = ({ gsapReady = true }) => {
   useGSAP(() => {
-    const clipAnimation = gsap.timeline({
-      scrollTrigger: {
-        trigger: "#clip",
-        start: "center center",
-        end: "+=800 center",
-        scrub: 0.5,
-        pin: true,
-        pinSpacing: true,
-      },
-    });
+    if (!gsapReady) return;
+    
+    // Delay to ensure DOM layout is complete
+    const timer = setTimeout(() => {
+      const clipAnimation = gsap.timeline({
+        scrollTrigger: {
+          trigger: "#clip",
+          start: "center center",
+          end: "+=800 center",
+          scrub: 0.5,
+          pin: true,
+          pinSpacing: true,
+        },
+      });
 
-    clipAnimation.to(".mask-clip-path", {
-      width: "100vw",
-      height: "100vh",
-      borderRadius: 0,
-    });
-  });
+      clipAnimation.to(".mask-clip-path", {
+        width: "100vw",
+        height: "100vh",
+        borderRadius: 0,
+      });
+    }, 50);
+    
+    return () => clearTimeout(timer);
+  }, [gsapReady]);
 
   return (
     <div id="about" className="min-h-screen bg-black">
@@ -47,9 +54,9 @@ const About = () => {
       </div>
 
       <div className="h-dvh w-screen" id="clip">
-        <div className="mask-clip-path about-image">
+        <div className="mask-clip-path about-image" style={{ willChange: 'width, height, border-radius' }}>
           <img
-            src="img/mid.webp"
+            src="/img/mid.webp"
             alt="Background"
             loading="lazy"
             decoding="async"

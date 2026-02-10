@@ -9,7 +9,7 @@ import ParticleBackground from "./ParticleBackground";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Hero = () => {
+const Hero = ({ gsapReady = true }) => {
   const [isHacked, setIsHacked] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
   const videoRef = useRef(null);
@@ -18,22 +18,29 @@ const Hero = () => {
   // useGSAP(() => { ... }); 
 
   useGSAP(() => {
-    gsap.set("#video-frame", {
-      clipPath: "polygon(14% 0, 72% 0, 88% 90%, 0 95%)",
-      borderRadius: "0% 0% 40% 10%",
-    });
-    gsap.from("#video-frame", {
-      clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-      borderRadius: "0% 0% 0% 0%",
-      ease: "power1.inOut",
-      scrollTrigger: {
-        trigger: "#video-frame",
-        start: "center center",
-        end: "bottom center",
-        scrub: true,
-      },
-    });
-  });
+    if (!gsapReady) return;
+    
+    // Small delay to ensure DOM is fully painted
+    const timer = setTimeout(() => {
+      gsap.set("#video-frame", {
+        clipPath: "polygon(14% 0, 72% 0, 88% 90%, 0 95%)",
+        borderRadius: "0% 0% 40% 10%",
+      });
+      gsap.from("#video-frame", {
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        borderRadius: "0% 0% 0% 0%",
+        ease: "power1.inOut",
+        scrollTrigger: {
+          trigger: "#video-frame",
+          start: "center center",
+          end: "bottom center",
+          scrub: true,
+        },
+      });
+    }, 50);
+    
+    return () => clearTimeout(timer);
+  }, [gsapReady]);
 
   return (
     <div id="hero" className="relative h-dvh overflow-x-hidden bg-black">
@@ -46,6 +53,7 @@ const Hero = () => {
       <div
         id="video-frame"
         className="relative z-10 h-dvh w-screen overflow-hidden rounded-lg bg-black"
+        style={{ willChange: 'clip-path, border-radius' }}
       >
         {videoEnded && <ParticleBackground />}
         
