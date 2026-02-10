@@ -7,6 +7,7 @@ const Preloader = ({ assets = [], onComplete }) => {
   const [currentFile, setCurrentFile] = useState('');
   const [loadedFiles, setLoadedFiles] = useState([]);
   const [terminalGibberish, setTerminalGibberish] = useState('');
+  const [cacheVerified, setCacheVerified] = useState(false);
   const gibberishIntervalRef = useRef(null);
 
   // Generate random terminal-style gibberish
@@ -225,6 +226,11 @@ const Preloader = ({ assets = [], onComplete }) => {
       console.log('⏳ Waiting for browser to finalize caching...');
       await new Promise(resolve => setTimeout(resolve, 1500));
       console.log('✅ Cache verification complete - ready to render!');
+      
+      // Signal that cache verification is done
+      if (isMounted) {
+        setCacheVerified(true);
+      }
     };
 
     loadAllAssets();
@@ -235,9 +241,12 @@ const Preloader = ({ assets = [], onComplete }) => {
   }, [assets]);
 
   useEffect(() => {
-    if (progress >= 100) {
-      console.log('📊 Progress 100% - waiting for final verification...');
-      // Wait longer after 100% to ensure everything is truly ready
+    // Only start fade-out when BOTH conditions are met:
+    // 1. Progress is 100%
+    // 2. Cache verification is complete
+    if (progress >= 100 && cacheVerified) {
+      console.log('📊 Progress 100% AND cache verified - ready to fade out!');
+      // Brief delay for smooth transition
       const timer = setTimeout(() => {
         console.log('🎬 Starting fade-out animation...');
         gsap.to(containerRef.current, {
@@ -249,10 +258,10 @@ const Preloader = ({ assets = [], onComplete }) => {
             onComplete?.();
           },
         });
-      }, 1800);
+      }, 500);
       return () => clearTimeout(timer);
     }
-  }, [progress, onComplete]);
+  }, [progress, cacheVerified, onComplete]);
 
   return (
     <div ref={containerRef} className="fixed inset-0 z-[9999] flex items-center justify-center bg-black overflow-hidden perspective-1000">
