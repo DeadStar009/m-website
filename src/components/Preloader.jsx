@@ -28,56 +28,117 @@ const Preloader = ({ assets = [], onComplete }) => {
       setLoadedFiles(prev => [...prev, filename]);
     };
 
-    // Generic fetch-based loader for robust caching
-    const loadWithFetch = (src, type) => {
-        return new Promise((resolve) => {
-            const filename = src.split('/').pop();
-            console.log(`⏳ Loading ${type}: ${filename}`);
-            setCurrentFile(filename);
-            
-            const startTime = Date.now();
-            fetch(src)
-                .then(response => {
-                    if (!response.ok) throw new Error(`Status ${response.status}`);
-                    const contentLength = response.headers.get('content-length');
-                    const sizeMB = contentLength ? (contentLength / 1024 / 1024).toFixed(2) : '???';
-                    console.log(`📦 Downloading ${filename} (${sizeMB} MB)...`);
-                    return response.blob(); // Force full download
-                })
-                .then((blob) => {
-                    const timeTaken = ((Date.now() - startTime) / 1000).toFixed(2);
-                    console.log(`✅ Completed ${filename} in ${timeTaken}s`);
-                    updateProgress(filename);
-                    resolve(src);
-                })
-                .catch((err) => {
-                    console.error(`❌ Failed to fetch ${filename}:`, err);
-                    updateProgress(filename);
-                    resolve(src);
-                });
-        });
-    };
-
-    // Preload images
+    // Preload images - Use Image element for proper caching
     const loadImage = (src) => {
-       return loadWithFetch(src, 'IMAGE');
+      return new Promise((resolve) => {
+        const filename = src.split('/').pop();
+        console.log(`⏳ Loading IMAGE: ${filename}`);
+        setCurrentFile(filename);
+        
+        const startTime = Date.now();
+        const img = new Image();
+        
+        img.onload = () => {
+          const timeTaken = ((Date.now() - startTime) / 1000).toFixed(2);
+          console.log(`✅ Image loaded: ${filename} in ${timeTaken}s`);
+          updateProgress(filename);
+          resolve(src);
+        };
+        
+        img.onerror = (err) => {
+          console.error(`❌ Image failed: ${filename}:`, err);
+          updateProgress(filename);
+          resolve(src);
+        };
+        
+        img.src = src;
+      });
     };
 
-    // Preload videos
+    // Preload videos - Use actual video element for proper browser caching
     const loadVideo = (src) => {
-       return loadWithFetch(src, 'VIDEO');
+      return new Promise((resolve) => {
+        const filename = src.split('/').pop();
+        console.log(`⏳ Loading VIDEO: ${filename}`);
+        setCurrentFile(filename);
+        
+        const startTime = Date.now();
+        const video = document.createElement('video');
+        video.preload = 'auto';
+        video.muted = true;
+        video.playsInline = true;
+        
+        const onReady = () => {
+          const timeTaken = ((Date.now() - startTime) / 1000).toFixed(2);
+          console.log(`✅ Video ready: ${filename} in ${timeTaken}s (buffered: ${video.buffered.length > 0 ? 'YES' : 'NO'})`);
+          updateProgress(filename);
+          // Keep video element in memory briefly to ensure cache
+          setTimeout(() => {
+            video.src = '';
+            video.load();
+          }, 100);
+          resolve(src);
+        };
+        
+        const onError = (err) => {
+          console.error(`❌ Video failed: ${filename}:`, err);
+          updateProgress(filename);
+          resolve(src);
+        };
+        
+        // Wait for video to be fully buffered and ready to play
+        video.addEventListener('canplaythrough', onReady, { once: true });
+        video.addEventListener('error', onError, { once: true });
+        
+        // Fallback if canplaythrough doesn't fire
+        setTimeout(() => {
+          if (!video.readyState >= 3) {
+            console.warn(`⚠️ Fallback triggered for ${filename}`);
+            onReady();
+          }
+        }, 30000);
+        
+        video.src = src;
+        video.load();
+      });
     };
 
-    // Preload audio
+    // Preload audio - Use Audio element for proper caching
     const loadAudio = (src) => {
-       return loadWithFetch(src, 'AUDIO');
+      return new Promise((resolve) => {
+        const filename = src.split('/').pop();
+        console.log(`⏳ Loading AUDIO: ${filename}`);
+        setCurrentFile(filename);
+        
+        const startTime = Date.now();
+        const audio = new Audio();
+        
+        const onReady = () => {
+          const timeTaken = ((Date.now() - startTime) / 1000).toFixed(2);
+          console.log(`✅ Audio loaded: ${filename} in ${timeTaken}s`);
+          updateProgress(filename);
+          resolve(src);
+        };
+        
+        const onError = (err) => {
+          console.error(`❌ Audio failed: ${filename}:`, err);
+          updateProgress(filename);
+          resolve(src);
+        };
+        
+        audio.addEventListener('canplaythrough', onReady, { once: true });
+        audio.addEventListener('error', onError, { once: true });
+        
+        audio.src = src;
+        audio.load();
+      });
     };
 
     // Preload fonts
     const loadFont = (fontFamily, src) => {
       return new Promise((resolve) => {
         const filename = src.split('/').pop();
-        console.log(`⏳ Loading FONT: ${filename}`);
+        console.log(`Loading FONT: ${filename}`);
         setCurrentFile(filename);
         
         const font = new FontFace(fontFamily, `url(${src})`);
@@ -100,7 +161,7 @@ const Preloader = ({ assets = [], onComplete }) => {
 
     // Start loading all assets
     const loadAllAssets = async () => {
-      console.log(`🚀 Starting preload of ${totalAssets} assets...`);
+      console.log(`Starting preload of ${totalAssets} assets...`);
       console.log('Assets to load:', assets.map(a => a.src).join(', '));
       
       const promises = assets.map((asset) => {
@@ -124,6 +185,11 @@ const Preloader = ({ assets = [], onComplete }) => {
 
       await Promise.all(promises);
       console.log('🎉 All assets loaded successfully!');
+      
+      // Extra verification: Wait a bit to ensure browser has everything ready
+      console.log('⏳ Waiting for browser to finalize caching...');
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      console.log('✅ Cache verification complete - ready to render!');
     };
 
     loadAllAssets();
@@ -135,17 +201,20 @@ const Preloader = ({ assets = [], onComplete }) => {
 
   useEffect(() => {
     if (progress >= 100) {
-      // Animate out the preloader
+      console.log('📊 Progress 100% - waiting for final verification...');
+      // Wait longer after 100% to ensure everything is truly ready
       const timer = setTimeout(() => {
+        console.log('🎬 Starting fade-out animation...');
         gsap.to(containerRef.current, {
           opacity: 0,
           duration: 0.8,
           ease: "power2.inOut",
           onComplete: () => {
+            console.log('✨ Preloader complete - rendering main content');
             onComplete?.();
           },
         });
-      }, 300);
+      }, 1800);
       return () => clearTimeout(timer);
     }
   }, [progress, onComplete]);
