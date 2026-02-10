@@ -154,120 +154,145 @@ const Preloader = ({ assets = [], onComplete }) => {
   }, [progress, onComplete]);
 
   return (
-    <div ref={containerRef} className="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
-      {/* Animated background grid */}
-      <div className="absolute inset-0 opacity-20">
+    <div ref={containerRef} className="fixed inset-0 z-[9999] flex items-center justify-center bg-black overflow-hidden perspective-1000">
+      {/* Background with futuristic grid and slight noise */}
+      <div className="absolute inset-0 pointer-events-none">
+         {/* Grid Background */}
         <div 
-          className="size-full"
+          className="absolute inset-0 opacity-20"
           style={{
-            backgroundImage: "linear-gradient(to right, #1e3a8a 1px, transparent 1px), linear-gradient(to bottom, #1e3a8a 1px, transparent 1px)",
-            backgroundSize: "4rem 4rem"
+            backgroundImage: `
+              linear-gradient(to right, rgba(30, 58, 138, 0.4) 1px, transparent 1px), 
+              linear-gradient(to bottom, rgba(30, 58, 138, 0.4) 1px, transparent 1px)
+            `,
+            backgroundSize: "4rem 4rem",
+            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 80%)"
           }}
         />
+        
+        {/* Static noise overlay (optional for retro feel) */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
+             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`}}>
+        </div>
       </div>
 
-      {/* Glowing orbs */}
-      <div className="absolute top-1/4 left-1/4 size-96 animate-pulse rounded-full bg-blue-900/20 blur-[100px]"></div>
-      <div className="absolute bottom-1/4 right-1/4 size-96 animate-pulse rounded-full bg-blue-800/20 blur-[100px] animation-delay-2000"></div>
+      {/* Cyberpunk glowing orbs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[120px] animate-pulse delay-1000"></div>
 
-      {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center gap-8">
-        {/* Logo/Title */}
-        <div className="flex flex-col items-center gap-4">
-          <p className="text-blue-100 text-sm md:text-base font-mono tracking-widest uppercase animate-pulse">
-            Loading Secure Connection...
-          </p>
+
+      {/* Main content container with glassmorphism */}
+      <div className="relative z-10 flex flex-col items-center justify-center p-8 md:p-12">
+        
+        {/* LOGO or Emblem (Static Image) */}
+        <div className="mb-8 relative group">
+           {/* Glitch effect clone on hover or active */}
+           <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-400 to-blue-600 opacity-20 group-hover:opacity-40 blur transition duration-500"></div>
+           <img 
+             src="/img/logo.png" 
+             alt="CYSCOM" 
+             className="relative h-20 w-20 md:h-24 md:w-24 object-contain drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] animate-float"
+           />
         </div>
 
-        {/* Circular loader */}
-        <div className="relative flex items-center justify-center">
-          <svg className="w-32 h-32 md:w-40 md:h-40 -rotate-90" viewBox="0 0 160 160">
-            {/* Background circle */}
+        {/* Loading Text */}
+        <div className="flex flex-col items-center gap-2 mb-8">
+          <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-cyan-200 to-blue-300 tracking-tighter uppercase font-zentry" style={{ textShadow: '0 0 20px rgba(6,182,212,0.5)' }}>
+            Loading
+          </h1>
+          <div className="flex items-center gap-3">
+            <div className="h-px w-8 bg-blue-500/50"></div>
+            <p className="text-blue-300 font-mono text-xs md:text-sm tracking-[0.2em] uppercase">
+              Establishing Secure Uplink
+            </p>
+            <div className="h-px w-8 bg-blue-500/50"></div>
+          </div>
+        </div>
+
+        {/* Circular loader & Percentage */}
+        <div className="relative flex items-center justify-center mb-6">
+          <svg className="w-48 h-48 -rotate-90 transform" viewBox="0 0 160 160">
+            {/* Outer Ring */}
             <circle
               cx="80"
               cy="80"
               r="70"
-              stroke="#1e3a8a"
-              strokeOpacity="0.2"
-              strokeWidth="8"
+              stroke="#1e293b"
+              strokeWidth="2"
               fill="none"
+              strokeDasharray="4 4"
             />
-            {/* Progress circle */}
+            {/* Inner Background Circle */}
             <circle
               cx="80"
               cy="80"
-              r="70"
-              stroke="url(#gradient)"
-              strokeWidth="8"
+              r="60"
+              stroke="#0f172a"
+              strokeWidth="6"
+              fill="none"
+              className="opacity-50"
+            />
+            {/* Progress Arc */}
+            <circle
+              cx="80"
+              cy="80"
+              r="60"
+              stroke="url(#loading-gradient)"
+              strokeWidth="6"
               fill="none"
               strokeLinecap="round"
-              strokeDasharray={2 * Math.PI * 70}
-              strokeDashoffset={2 * Math.PI * 70 * (1 - progress / 100)}
-              className="transition-all duration-300 ease-out"
-              style={{
-                filter: "drop-shadow(0 0 15px rgba(59, 130, 246, 0.6))",
-              }}
+              strokeDasharray={2 * Math.PI * 60}
+              strokeDashoffset={2 * Math.PI * 60 * (1 - progress / 100)}
+              className="transition-all duration-300 ease-out drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]"
             />
             <defs>
-              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#60a5fa" />
-                <stop offset="100%" stopColor="#2563eb" />
+              <linearGradient id="loading-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#22d3ee" /> {/* Cyan 400 */}
+                <stop offset="100%" stopColor="#3b82f6" /> {/* Blue 500 */}
               </linearGradient>
             </defs>
           </svg>
 
-          {/* Center percentage */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-4xl md:text-5xl font-bold text-white font-mono tracking-tighter">
-              {progress}
-              <span className="text-2xl md:text-3xl text-blue-400 ml-1">%</span>
-            </span>
+          {/* Center Text */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center font-mono text-cyan-50">
+             <span className="text-4xl font-bold tracking-tighter tabular-nums drop-shadow-md">
+               {progress}<span className="text-lg text-cyan-400/80">%</span>
+             </span>
           </div>
         </div>
 
-        {/* Loading bar */}
-        <div className="w-64 md:w-80 h-1 bg-gray-900 rounded-full overflow-hidden border border-blue-900/50">
-          <div
-            className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-out relative"
-            style={{ width: `${progress}%` }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer"></div>
-          </div>
+        {/* Terminal / Status Lines (Decorative) */}
+        <div className="h-6 w-64 overflow-hidden relative">
+            <div className="absolute inset-0 flex flex-col items-center animate-slide-up text-[10px] text-blue-400/60 font-mono leading-none gap-1">
+                <span>[ OK ] Loading Modules...</span>
+                <span>[ OK ] Verifying Assets...</span>
+                <span>[ OK ] Decrypting Payload...</span>
+                <span>[ OK ] Handshake Complete.</span>
+                <span>[ OK ] Access Granted.</span>
+            </div>
+            {/* Gradient mask for fading text */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none"></div>
         </div>
 
-        {/* Loading text */}
-        <div className="flex items-center gap-2">
-          <div className="flex gap-1">
-            <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></span>
-            <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce animation-delay-200"></span>
-            <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce animation-delay-400"></span>
-          </div>
-          <p className="text-blue-200/70 text-xs md:text-sm font-mono tracking-widest uppercase">
-            Initializing Security Protocols
-          </p>
-        </div>
       </div>
 
       <style>{`
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
         }
-        .animate-shimmer {
-          animation: shimmer 1.5s infinite;
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
         }
-        .animation-delay-200 {
-          animation-delay: 0.2s;
+        .animate-slide-up {
+            animation: slideUp 2s steps(4, end) infinite;
         }
-        .animation-delay-400 {
-          animation-delay: 0.4s;
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(-100%); }
         }
-        .animation-delay-2000 {
-          animation-delay: 2s;
+        .perspective-1000 {
+            perspective: 1000px;
         }
       `}</style>
     </div>

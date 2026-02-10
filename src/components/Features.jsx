@@ -176,9 +176,9 @@ const Features = () => (
                 <b>CTFs AND EVENTS</b>
               </>
             }
-            description="Not just a challenge — it’s a journey.
+            description="Not just a challenge, it’s a journey.
 Every event helps you grow, hack smarter, and think deeper.
-And the next one? Already on the way."
+And the next one? Already on the way..."
           />
 
           </a>
