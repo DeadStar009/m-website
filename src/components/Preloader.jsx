@@ -22,7 +22,7 @@ const Preloader = ({ assets = [], onComplete }) => {
     const updateProgress = (filename) => {
       if (!isMounted) return;
       loaded++;
-      const currentProgress = Math.round((loaded / totalAssets) * 100);
+      const currentProgress = Math.min(100, Math.round((loaded / totalAssets) * 100));
       console.log(`✓ Loaded (${loaded}/${totalAssets}): ${filename} - ${currentProgress}%`);
       setProgress(currentProgress);
       setLoadedFiles(prev => [...prev, filename]);

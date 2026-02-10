@@ -30,7 +30,6 @@ function App() {
     { type: 'image', src: 'img/fast.webp' },
     // Navbar/Global Assets
     { type: 'image', src: 'img/logo.png' },
-    { type: 'audio', src: 'audio/loop.mp3' },
   ];
 
   const handlePreloaderComplete = () => {

@@ -34,10 +34,12 @@ const NavBar = () => {
 
   // Manage audio playback
   useEffect(() => {
-    if (isAudioPlaying) {
-      audioElementRef.current.play();
-    } else {
-      audioElementRef.current.pause();
+    if (audioElementRef.current) {
+      if (isAudioPlaying) {
+        audioElementRef.current.play();
+      } else {
+        audioElementRef.current.pause();
+      }
     }
   }, [isAudioPlaying]);
 
@@ -149,12 +151,13 @@ const NavBar = () => {
               onClick={toggleAudioIndicator}
               className="ml-10 flex items-center space-x-0.5"
             >
-              <audio
+              {/* Audio removed - loop.mp3 no longer exists */}
+              {/* <audio
                 ref={audioElementRef}
                 className="hidden"
                 src="/audio/loop.mp3"
                 loop
-              />
+              /> */}
               {[1, 2, 3, 4].map((bar) => (
                 <div
                   key={bar}
