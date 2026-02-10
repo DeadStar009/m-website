@@ -32,57 +32,41 @@ const Preloader = ({ assets = [], onComplete }) => {
       setProgress(currentProgress);
     };
 
-    // Preload images
+    // Generic fetch-based loader for robust caching
+    const loadWithFetch = (src) => {
+        return new Promise((resolve) => {
+            fetch(src)
+                .then(response => {
+                    if (!response.ok) throw new Error(`Status ${response.status}`);
+                    return response.blob(); // Force full download
+                })
+                .then(() => {
+                    updateProgress();
+                    resolve(src);
+                })
+                .catch((err) => {
+                    console.warn(`Failed to fetch asset: ${src}`, err);
+                    updateProgress();
+                    resolve(src);
+                });
+        });
+    };
+
+    // Preload images - simpler Image object is usually fine, 
+    // but fetch ensures 100% data presence for heavy PNG/WEBP
     const loadImage = (src) => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        const done = () => {
-            updateProgress();
-            resolve(src);
-        };
-        img.onload = done;
-        img.onerror = () => {
-          console.warn(`Failed to load image: ${src}`);
-          done();
-        };
-        img.src = src;
-      });
+       return loadWithFetch(src);
     };
 
-    // Preload videos
+    // Preload videos - CRITICAL FIX: Use fetch instead of document.createElement('video')
+    // This forces the browser to download the entire file into the disk cache.
     const loadVideo = (src) => {
-      return new Promise((resolve) => {
-        const video = document.createElement('video');
-        const done = () => {
-            updateProgress();
-            resolve(src);
-        };
-        video.onloadeddata = done;
-        video.onerror = () => {
-          console.warn(`Failed to load video: ${src}`);
-          done();
-        };
-        video.src = src;
-        video.load();
-      });
+       return loadWithFetch(src);
     };
 
-    // Preload audio
+    // Preload audio - Use fetch for same reason
     const loadAudio = (src) => {
-      return new Promise((resolve) => {
-        const audio = new Audio();
-        const done = () => {
-            updateProgress();
-            resolve(src);
-        };
-        audio.oncanplaythrough = done;
-        audio.onerror = () => {
-          console.warn(`Failed to load audio: ${src}`);
-          done();
-        };
-        audio.src = src;
-        audio.load();
-      });
+       return loadWithFetch(src);
     };
 
     // Preload fonts
