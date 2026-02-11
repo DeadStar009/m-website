@@ -1,10 +1,9 @@
 import { FaDiscord, FaTwitter, FaYoutube, FaMedium } from "react-icons/fa";
 
 const socialLinks = [
-  { href: "https://discord.com", icon: <FaDiscord /> },
+  { href: "https://discord.gg/cRZ9gsC3", icon: <FaDiscord /> },
   { href: "https://twitter.com", icon: <FaTwitter /> },
   { href: "https://youtube.com", icon: <FaYoutube /> },
-  { href: "https://medium.com", icon: <FaMedium /> },
 ];
 
 const Footer = () => {
@@ -28,13 +27,6 @@ const Footer = () => {
             </a>
           ))}
         </div>
-
-        <a
-          href="#privacy-policy"
-          className="text-center text-xs md:text-sm font-light hover:underline md:text-right transition-colors duration-300 text-blue-100 hover:text-blue-300">
-        
-          Privacy Policy
-        </a>
       </div>
     </footer>
   );

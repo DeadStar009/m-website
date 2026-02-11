@@ -6,25 +6,42 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Preloader = ({ assets = [], onComplete }) => {
   const containerRef = useRef(null);
+  const canvasRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [currentFile, setCurrentFile] = useState('');
   const [loadedFiles, setLoadedFiles] = useState([]);
   const [terminalGibberish, setTerminalGibberish] = useState('');
   const [cacheVerified, setCacheVerified] = useState(false);
   const gibberishIntervalRef = useRef(null);
+  const particlesRef = useRef([]);
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const animationFrameRef = useRef(null);
 
-  // Generate random terminal-style gibberish
+  // Generate random terminal-style file loading messages
   const generateGibberish = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/';
-    const hexChars = '0123456789ABCDEF';
-    const patterns = [
-      () => `0x${Array.from({length: 8}, () => hexChars[Math.floor(Math.random() * hexChars.length)]).join('')}`,
-      () => `[${Array.from({length: 12}, () => chars[Math.floor(Math.random() * chars.length)]).join('')}]`,
-      () => `${Math.random().toString(16).substring(2, 10).toUpperCase()}::${Math.random().toString(16).substring(2, 6).toUpperCase()}`,
-      () => `>> ${Array.from({length: 16}, () => chars[Math.floor(Math.random() * chars.length)]).join('')}`,
-      () => `MEM_BLOCK_${Math.floor(Math.random() * 9999).toString().padStart(4, '0')}_${hexChars[Math.floor(Math.random() * 16)]}${hexChars[Math.floor(Math.random() * 16)]}`,
+    const dllFiles = [
+      'kernel32.dll', 'user32.dll', 'gdi32.dll', 'advapi32.dll', 'shell32.dll',
+      'ole32.dll', 'oleaut32.dll', 'msvcrt.dll', 'comdlg32.dll', 'winmm.dll',
+      'ws2_32.dll', 'opengl32.dll', 'ntdll.dll', 'bcrypt.dll', 'crypt32.dll',
+      'urlmon.dll', 'winhttp.dll', 'msvcp140.dll', 'vcruntime140.dll'
     ];
-    return patterns[Math.floor(Math.random() * patterns.length)]();
+    
+    const jsxFiles = [
+      'App.jsx', 'Hero.jsx', 'Navbar.jsx', 'Footer.jsx', 'Button.jsx',
+      'Features.jsx', 'Story.jsx', 'Contact.jsx', 'About.jsx', 'OurTeam.jsx',
+      'AnimatedTitle.jsx', 'VideoPreview.jsx', 'PastEvents.jsx', 'Preloader.jsx',
+      'ParticleBackground.jsx', 'ScrollToTop.jsx', 'newstick.tsx', 'sticky_scroll.jsx'
+    ];
+    
+    const prefixes = ['Loading', 'Initializing', 'Mounting', 'Rendering', 'Importing'];
+    const statuses = ['OK', 'DONE', 'READY', 'LOADED'];
+    
+    const fileType = Math.random() > 0.5 ? dllFiles : jsxFiles;
+    const file = fileType[Math.floor(Math.random() * fileType.length)];
+    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const status = statuses[Math.floor(Math.random() * statuses.length)];
+    
+    return `${prefix} ${file}... [${status}]`;
   };
 
   // Start terminal gibberish animation
@@ -36,6 +53,121 @@ const Preloader = ({ assets = [], onComplete }) => {
     return () => {
       if (gibberishIntervalRef.current) {
         clearInterval(gibberishIntervalRef.current);
+      }
+    };
+  }, []);
+
+  // Particle system initialization and animation
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Create particles
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.radius = Math.random() * 2 + 1;
+        this.opacity = Math.random() * 0.5 + 0.3;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Wrap around edges
+        if (this.x < 0) this.x = canvas.width;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.y < 0) this.y = canvas.height;
+        if (this.y > canvas.height) this.y = 0;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(59, 130, 246, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    // Initialize particles
+    const particleCount = 100;
+    particlesRef.current = Array.from({ length: particleCount }, () => new Particle());
+
+    // Mouse move handler
+    const handleMouseMove = (e) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
+    // Animation loop
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Update and draw particles
+      particlesRef.current.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+
+      // Draw connections near mouse
+      const mouse = mouseRef.current;
+      const connectionDistance = 150;
+      
+      particlesRef.current.forEach((particle, i) => {
+        const dx = mouse.x - particle.x;
+        const dy = mouse.y - particle.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < connectionDistance) {
+          // Connect particle to mouse
+          const opacity = (1 - distance / connectionDistance) * 0.5;
+          ctx.beginPath();
+          ctx.moveTo(particle.x, particle.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(96, 165, 250, ${opacity})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          // Connect nearby particles to each other
+          particlesRef.current.slice(i + 1).forEach(otherParticle => {
+            const dx2 = particle.x - otherParticle.x;
+            const dy2 = particle.y - otherParticle.y;
+            const distance2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+
+            if (distance2 < 100) {
+              const opacity2 = (1 - distance2 / 100) * 0.3;
+              ctx.beginPath();
+              ctx.moveTo(particle.x, particle.y);
+              ctx.lineTo(otherParticle.x, otherParticle.y);
+              ctx.strokeStyle = `rgba(59, 130, 246, ${opacity2})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          });
+        }
+      });
+
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, []);
@@ -286,8 +418,15 @@ const Preloader = ({ assets = [], onComplete }) => {
 
   return (
     <div ref={containerRef} className="fixed inset-0 z-[9999] flex items-center justify-center bg-black overflow-hidden perspective-1000">
+      {/* Interactive Particle Canvas */}
+      <canvas 
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none"
+        style={{ zIndex: 1 }}
+      />
+
       {/* Background with futuristic grid and slight noise */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}>
          {/* Grid Background */}
         <div 
           className="absolute inset-0 opacity-20"
@@ -308,23 +447,12 @@ const Preloader = ({ assets = [], onComplete }) => {
       </div>
 
       {/* Cyberpunk glowing orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] animate-pulse"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[120px] animate-pulse delay-1000"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] animate-pulse" style={{ zIndex: 0 }}></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[120px] animate-pulse delay-1000" style={{ zIndex: 0 }}></div>
 
 
       {/* Main content container with glassmorphism */}
       <div className="relative z-10 flex flex-col items-center justify-center p-8 md:p-12">
-        
-        {/* LOGO or Emblem (Static Image) */}
-        <div className="mb-8 relative group">
-           {/* Glitch effect clone on hover or active */}
-           <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-400 to-blue-600 opacity-20 group-hover:opacity-40 blur transition duration-500"></div>
-           <img 
-             src="/img/logo.png" 
-             alt="CYSCOM" 
-             className="relative h-20 w-20 md:h-24 md:w-24 object-contain drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] animate-float"
-           />
-        </div>
 
         {/* Loading Text */}
         <div className="flex flex-col items-center gap-2 mb-8">
