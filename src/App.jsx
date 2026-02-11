@@ -20,6 +20,7 @@ function App() {
   const assets = [
     // Hero Video
     { type: 'video', src: '/videos/main.webm' },
+    { type: 'image', src: '/img/hacked.webp' },
     // Features Assets
     { type: 'image', src: '/img/newsletter.webp' },
     { type: 'video', src: '/videos/ctf.webm' },

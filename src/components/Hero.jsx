@@ -81,13 +81,13 @@ const Hero = () => {
           {/* Terminal content - shifted left */}
           <div className="relative z-10 text-left font-mono p-8 ml-8 md:ml-16 lg:ml-24">
             <div className="text-6xl md:text-8xl font-bold text-white mb-8 glitch-text">
-              YOU ARE HACKED
+              YOU ARE NOW HACKED
             </div>
             <div className="text-xl md:text-2xl text-white opacity-90 mb-4">
               &gt; SYSTEM COMPROMISED
             </div>
             <div className="text-lg md:text-xl text-white opacity-80">
-              &gt; ALL YOUR DATA BELONGS TO US
+              &gt; THINK BEFORE YOU CLICK
             </div>
             <div className="mt-8 text-sm text-white opacity-70 animate-pulse">
               [TERMINAL_ID: 0x{Math.random().toString(16).substr(2, 8).toUpperCase()}]
@@ -104,11 +104,11 @@ const Hero = () => {
               &gt; INITIATING BREACH...
             </div>
             <div className="text-sm md:text-base opacity-70">
-              &gt; Bypassing firewall...
+              &gt; Creating firewall exception...
               <br />
-              &gt; Extracting credentials...
+              &gt; Deploying Rootkit...
               <br />
-              &gt; Gaining root access...
+              &gt; Creating Connection...
             </div>
           </div>
         </div>

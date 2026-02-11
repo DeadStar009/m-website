@@ -11,7 +11,7 @@ const Footer = () => {
     <footer className="w-screen py-4 md:py-5 text-white bg-gradient-to-r from-blue-950 via-blue-900 to-blue-950 border-t border-blue-700/30">
       <div className="container mx-auto flex flex-col items-center justify-between gap-3 md:gap-4 px-4 md:flex-row">
         <p className="text-center text-xs md:text-sm font-light md:text-left text-blue-100">
-          ©CYSCOM 2025. All rights reserved
+          ©CYSCOM 2026.
         </p>
 
         <div className="flex justify-center gap-3 md:gap-4">

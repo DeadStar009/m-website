@@ -189,7 +189,6 @@ const Preloader = ({ assets = [], onComplete }) => {
       loaded++;
       // Ensure progress never exceeds 95 during asset loading
       const currentProgress = Math.min(95, Math.round((loaded / totalAssets) * 95));
-      console.log(`✓ Loaded (${loaded}/${totalAssets}): ${filename} - ${currentProgress}%`);
       setProgress(currentProgress);
       setLoadedFiles(prev => [...prev, filename]);
     };
@@ -198,7 +197,6 @@ const Preloader = ({ assets = [], onComplete }) => {
     const loadImage = (src) => {
       return new Promise((resolve) => {
         const filename = src.split('/').pop();
-        console.log(`⏳ Loading IMAGE: ${filename}`);
         setCurrentFile(filename);
         
         const startTime = Date.now();
@@ -206,13 +204,11 @@ const Preloader = ({ assets = [], onComplete }) => {
         
         img.onload = () => {
           const timeTaken = ((Date.now() - startTime) / 1000).toFixed(2);
-          console.log(`✅ Image loaded: ${filename} in ${timeTaken}s`);
           updateProgress(filename);
           resolve(src);
         };
         
         img.onerror = (err) => {
-          console.error(`❌ Image failed: ${filename}:`, err);
           updateProgress(filename);
           resolve(src);
         };
@@ -227,7 +223,6 @@ const Preloader = ({ assets = [], onComplete }) => {
     const loadVideo = (src) => {
       return new Promise((resolve) => {
         const filename = src.split('/').pop();
-        console.log(`⏳ Loading VIDEO: ${filename}`);
         setCurrentFile(filename);
         
         const startTime = Date.now();
@@ -238,7 +233,6 @@ const Preloader = ({ assets = [], onComplete }) => {
         
         const onReady = () => {
           const timeTaken = ((Date.now() - startTime) / 1000).toFixed(2);
-          console.log(`✅ Video ready: ${filename} in ${timeTaken}s (buffered: ${video.buffered.length > 0 ? 'YES' : 'NO'})`);
           updateProgress(filename);
           // Keep video element in memory briefly to ensure cache
           setTimeout(() => {
@@ -249,7 +243,6 @@ const Preloader = ({ assets = [], onComplete }) => {
         };
         
         const onError = (err) => {
-          console.error(`❌ Video failed: ${filename}:`, err);
           updateProgress(filename);
           resolve(src);
         };
@@ -261,7 +254,6 @@ const Preloader = ({ assets = [], onComplete }) => {
         // Fallback if canplaythrough doesn't fire
         setTimeout(() => {
           if (!video.readyState >= 3) {
-            console.warn(`⚠️ Fallback triggered for ${filename}`);
             onReady();
           }
         }, 30000);
@@ -277,7 +269,6 @@ const Preloader = ({ assets = [], onComplete }) => {
     const loadAudio = (src) => {
       return new Promise((resolve) => {
         const filename = src.split('/').pop();
-        console.log(`⏳ Loading AUDIO: ${filename}`);
         setCurrentFile(filename);
         
         const startTime = Date.now();
@@ -285,13 +276,11 @@ const Preloader = ({ assets = [], onComplete }) => {
         
         const onReady = () => {
           const timeTaken = ((Date.now() - startTime) / 1000).toFixed(2);
-          console.log(`✅ Audio loaded: ${filename} in ${timeTaken}s`);
           updateProgress(filename);
           resolve(src);
         };
         
         const onError = (err) => {
-          console.error(`❌ Audio failed: ${filename}:`, err);
           updateProgress(filename);
           resolve(src);
         };
@@ -310,7 +299,6 @@ const Preloader = ({ assets = [], onComplete }) => {
     const loadFont = (fontFamily, src) => {
       return new Promise((resolve) => {
         const filename = src.split('/').pop();
-        console.log(`Loading FONT: ${filename}`);
         setCurrentFile(filename);
         
         const font = new FontFace(fontFamily, `url(${src})`);
@@ -321,11 +309,9 @@ const Preloader = ({ assets = [], onComplete }) => {
         font.load()
           .then(() => {
             document.fonts.add(font);
-            console.log(`✅ Font loaded: ${filename}`);
             done();
           })
           .catch((err) => {
-            console.error(`❌ Failed to load font ${filename}:`, err);
             done();
           });
       });
@@ -333,9 +319,6 @@ const Preloader = ({ assets = [], onComplete }) => {
 
     // Start loading all assets
     const loadAllAssets = async () => {
-      console.log(`Starting preload of ${totalAssets} assets...`);
-      console.log('Assets to load:', assets.map(a => a.src).join(', '));
-      
       const promises = assets.map((asset) => {
         const { type, src, fontFamily } = asset;
         
@@ -356,28 +339,22 @@ const Preloader = ({ assets = [], onComplete }) => {
       });
 
       await Promise.all(promises);
-      console.log('🎉 All assets loaded successfully!');
       
       // GSAP initialization check
-      console.log('🎬 Verifying GSAP plugins...');
       if (isMounted) setProgress(Math.min(100, 96));
       
       // Ensure ScrollTrigger is ready
       await new Promise(resolve => {
         if (typeof gsap !== 'undefined' && gsap.plugins && gsap.plugins.scrollTrigger) {
-          console.log('✅ GSAP ScrollTrigger ready!');
           resolve();
         } else {
-          console.log('✅ GSAP core ready!');
           resolve();
         }
       });
       
       // Extra verification: Wait a bit to ensure browser has everything ready
-      console.log('⏳ Waiting for browser to finalize caching...');
       if (isMounted) setProgress(Math.min(100, 97));
       await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('✅ Cache verification complete - ready to render!');
       
       // Signal that cache verification is done and set to 100%
       if (isMounted) {
@@ -398,16 +375,13 @@ const Preloader = ({ assets = [], onComplete }) => {
     // 1. Progress is 100%
     // 2. Cache verification is complete
     if (progress >= 100 && cacheVerified) {
-      console.log('📊 Progress 100% AND cache verified - ready to fade out!');
       // Brief delay for smooth transition
       const timer = setTimeout(() => {
-        console.log('🎬 Starting fade-out animation...');
         gsap.to(containerRef.current, {
           opacity: 0,
           duration: 0.8,
           ease: "power2.inOut",
           onComplete: () => {
-            console.log('✨ Preloader complete - rendering main content');
             onComplete?.();
           },
         });

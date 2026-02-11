@@ -39,7 +39,6 @@ export const usePreloadAssets = (assets = []) => {
           resolve();
         };
         img.onerror = () => {
-          console.warn(`Failed to load image: ${src}`);
           updateProgress();
           resolve();
         };
@@ -56,7 +55,6 @@ export const usePreloadAssets = (assets = []) => {
           resolve();
         };
         video.onerror = () => {
-          console.warn(`Failed to load video: ${src}`);
           updateProgress();
           resolve();
         };
@@ -73,7 +71,6 @@ export const usePreloadAssets = (assets = []) => {
           resolve();
         };
         audio.onerror = () => {
-          console.warn(`Failed to load audio: ${src}`);
           updateProgress();
           resolve();
         };
@@ -92,7 +89,6 @@ export const usePreloadAssets = (assets = []) => {
             resolve();
           })
           .catch(() => {
-            console.warn(`Failed to load font: ${src}`);
             updateProgress();
             resolve();
           });
